@@ -21,6 +21,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         private bool _isRunning;
         
         private PlayerData _playerData;
+        private ISaveLoadService _saveLoadService;
+        private ICoroutinesPerformer _coroutinesPerformer;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -34,6 +36,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             Debug.Log("MainMenuBootstrap initialized");
             
             _walletService = _container.Resolve<WalletService>();
+            _saveLoadService = _container.Resolve<ISaveLoadService>();
+            _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
             
             _selectSymbolsSetController = new SelectSymbolsSetController(_container);
             
@@ -69,6 +73,16 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         public override void Dispose()
         {
             //
+        }
+        
+        private IEnumerator LoadPlayerData()
+        {
+            PlayerData loadedPlayerData = null;
+            
+            yield return _saveLoadService.Load<PlayerData>(data => loadedPlayerData = data);
+            
+            Debug.Log("Gold: " + loadedPlayerData.WalletData[CurrencyTypes.Gold]);
+            Debug.Log("Diamond: " + loadedPlayerData.WalletData[CurrencyTypes.Diamond]);
         }
     }
 }
