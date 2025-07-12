@@ -6,7 +6,6 @@ using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Controllers;
 using _Project.Develop.Runtime.Utilities.DataManagement;
-using _Project.Develop.Runtime.Utilities.DataManagement.Serializers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
