@@ -5,9 +5,14 @@ using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.DataRepository;
+using _Project.Develop.Runtime.Utilities.DataManagement.KeysStorage;
+using _Project.Develop.Runtime.Utilities.DataManagement.Serializers;
 using _Project.Develop.Runtime.Utilities.LoadingScreen;
 using _Project.Develop.Runtime.Utilities.Reactive;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
@@ -23,6 +28,18 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle<ILoadingScreen>(CreateLoadingScreen);
             container.RegisterAsSingle(CreateSceneSwitcherService);
             container.RegisterAsSingle(CreateWalletService);
+            container.RegisterAsSingle<ISaveLoadService>(CreateSaveLoadService);
+        }
+
+        private static SaveLoadService CreateSaveLoadService(DIContainer c)
+        {
+            IDataSerializer dataSerializer = new JSONSerializer();
+            IDataKeysStorage dataKeysStorage = new MapDataKeyStorage();
+            
+            string saveFolderPath = Application.isEditor ? Application.dataPath : Application.persistentDataPath;
+            IDataRepository dataRepository = new LocalFileDataRepository(saveFolderPath, "json");
+            
+            return new SaveLoadService(dataSerializer, dataKeysStorage, dataRepository);
         }
 
         private static WalletService CreateWalletService(DIContainer c)
