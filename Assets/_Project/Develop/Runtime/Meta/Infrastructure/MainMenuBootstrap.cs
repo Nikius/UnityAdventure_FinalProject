@@ -1,9 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.Serializers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -14,6 +17,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         private DIContainer _container;
         
         private WalletService _walletService;
+        
+        private PlayerData _playerData;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -28,6 +33,13 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             
             _walletService = _container.Resolve<WalletService>();
             
+            _playerData = new PlayerData();
+            _playerData.WalletData = new Dictionary<CurrencyTypes, int>()
+            {
+                { CurrencyTypes.Gold, 5 },
+                { CurrencyTypes.Diamond, 10 }
+            };
+
             yield break;
         }
 
