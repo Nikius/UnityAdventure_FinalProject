@@ -1,8 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Controllers;
+using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.Serializers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -16,6 +20,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         private SelectSymbolsSetController _selectSymbolsSetController;
         
         private bool _isRunning;
+        
+        private PlayerData _playerData;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -34,6 +40,13 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             
             _selectSymbolsSetController.Initialize();
             
+            _playerData = new PlayerData();
+            _playerData.WalletData = new Dictionary<CurrencyTypes, int>()
+            {
+                { CurrencyTypes.Gold, 5 },
+                { CurrencyTypes.Diamond, 10 }
+            };
+
             yield break;
         }
 
