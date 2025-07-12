@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
@@ -30,6 +29,11 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         public override void Run()
         {
             Debug.Log("MainMenuBootstrap running...");
+        }
+
+        private void OnFieldChanged(int arg1, int arg2)
+        {
+            Debug.Log("OnFieldChanged: " + arg1 + ", " + arg2);
         }
 
         private void Update()
