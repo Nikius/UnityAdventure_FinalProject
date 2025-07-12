@@ -36,11 +36,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             Debug.Log("MainMenuBootstrap running...");
         }
 
-        private void OnFieldChanged(int arg1, int arg2)
-        {
-            Debug.Log("OnFieldChanged: " + arg1 + ", " + arg2);
-        }
-
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F))
