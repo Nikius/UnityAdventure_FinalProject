@@ -1,4 +1,5 @@
-﻿using _Project.Develop.Runtime.Infrastructure.DI;
+﻿using _Project.Develop.Runtime.Gameplay.Services;
+using _Project.Develop.Runtime.Infrastructure.DI;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
@@ -7,7 +8,9 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
     {
         public static void Process(DIContainer container, GameplayInputArgs args)
         {
-            Debug.Log("Process registration services on Gameplay scene");
+            container.RegisterAsSingle(CreateStringGeneratorService);
         }
+        
+        private static StringGeneratorService CreateStringGeneratorService(DIContainer c) => new();
     }
 }

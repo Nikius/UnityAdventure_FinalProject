@@ -4,11 +4,11 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
     public class GameplayInputArgs: IInputSceneArgs
     {
-        public GameplayInputArgs(int levelNumber)
+        public GameplayInputArgs(int symbolsSetIndex)
         {
-            LevelNumber = levelNumber;
+            SymbolsSetIndex = symbolsSetIndex;
         }
 
-        public int LevelNumber { get; }
+        public int SymbolsSetIndex { get; }
     }
 }

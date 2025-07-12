@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using _Project.Develop.Runtime.Configs;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
@@ -12,6 +14,9 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     public class MainMenuBootstrap: SceneBootstrap
     {
         private DIContainer _container;
+        private MainMenuCycle _mainMenuCycle;
+        
+        private bool _isRunning;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -24,22 +29,26 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            yield break;
+            _mainMenuCycle = new MainMenuCycle(_container);
+            
+            yield return _mainMenuCycle.Prepare();
         }
 
         public override void Run()
         {
-            Debug.Log("MainMenuBootstrap running...");
+            _mainMenuCycle.Launch();
+
+            _isRunning = true;
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-                coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.Gameplay, new GameplayInputArgs(2)));
-            }
+            if (_isRunning == false)
+                return;
+            
+            _mainMenuCycle.Update(Time.deltaTime);
         }
+        
+        private void OnDestroy() => _mainMenuCycle?.Dispose();
     }
 }

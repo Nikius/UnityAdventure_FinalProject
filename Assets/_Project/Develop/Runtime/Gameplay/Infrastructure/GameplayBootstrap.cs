@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
+using _Project.Develop.Runtime.Configs;
+using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
@@ -12,7 +15,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
     {
         private DIContainer _container;
         private GameplayInputArgs _inputArgs;
-
+        private GameplayCycle _gameplayCycle;
+        
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
             _container = container;
@@ -27,26 +31,17 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public override IEnumerator Initialize()
         {
-            Debug.Log($"Current level: {_inputArgs.LevelNumber}");
+            Debug.Log($"Current level: {_inputArgs.SymbolsSetIndex}");
             
-            Debug.Log("GameplayBootstrap initialized");
+            _gameplayCycle = new GameplayCycle(_container, _inputArgs);
             
-            yield break;
+            yield return _gameplayCycle.Prepare();
         }
 
-        public override void Run()
-        {
-            Debug.Log("GameplayBootstrap running...");
-        }
+        public override void Run() => _gameplayCycle.Launch();
         
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-                coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
-            }
-        }
+        private void OnDestroy() => _gameplayCycle?.Dispose();
+        
+        private void Update() => _gameplayCycle?.Update(Time.deltaTime);
     }
 }

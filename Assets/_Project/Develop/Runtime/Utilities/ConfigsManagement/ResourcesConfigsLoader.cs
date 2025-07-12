@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Project.Develop.Runtime.Configs;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace _Project.Develop.Runtime.Utilities.ConfigsManagement
 
         private readonly Dictionary<Type, string> _configsResourcesPaths = new()
         {
-            
+            { typeof(GameModesConfig), "Configs/GameModes" },
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)
