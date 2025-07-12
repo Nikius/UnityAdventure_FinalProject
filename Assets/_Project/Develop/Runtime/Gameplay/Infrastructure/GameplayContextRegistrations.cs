@@ -1,4 +1,4 @@
-﻿using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Infrastructure.DI;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {

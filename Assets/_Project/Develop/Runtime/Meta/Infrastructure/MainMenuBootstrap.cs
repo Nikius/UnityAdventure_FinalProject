@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
