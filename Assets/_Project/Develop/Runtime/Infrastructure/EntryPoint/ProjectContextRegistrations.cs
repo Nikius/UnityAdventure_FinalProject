@@ -1,10 +1,14 @@
-﻿using _Project.Develop.Runtime.Infrastructure.DI;
+﻿using System;
+using System.Collections.Generic;
+using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.LoadingScreen;
+using _Project.Develop.Runtime.Utilities.Reactive;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
 {
@@ -18,6 +22,17 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateSceneLoaderService);
             container.RegisterAsSingle<ILoadingScreen>(CreateLoadingScreen);
             container.RegisterAsSingle(CreateSceneSwitcherService);
+            container.RegisterAsSingle(CreateWalletService);
+        }
+
+        private static WalletService CreateWalletService(DIContainer c)
+        {
+            Dictionary<CurrencyTypes, ReactiveVariable<int>> currencies = new();
+
+            foreach (CurrencyTypes currencyTypes in Enum.GetValues(typeof(CurrencyTypes)))
+                currencies[currencyTypes] = new ReactiveVariable<int>();
+            
+            return new WalletService(currencies);
         }
 
         private static SceneSwitcherService CreateSceneSwitcherService(DIContainer c)

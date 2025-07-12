@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Controllers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     public class MainMenuBootstrap: SceneBootstrap
     {
         private DIContainer _container;
+        
+        private WalletService _walletService;
         private SelectSymbolsSetController _selectSymbolsSetController;
         
         private bool _isRunning;
@@ -24,6 +27,8 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         public override IEnumerator Initialize()
         {
             Debug.Log("MainMenuBootstrap initialized");
+            
+            _walletService = _container.Resolve<WalletService>();
             
             _selectSymbolsSetController = new SelectSymbolsSetController(_container);
             
