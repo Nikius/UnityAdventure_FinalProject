@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using _Project.Develop.Runtime.Configs;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
-using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -13,11 +14,9 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     public class MainMenuBootstrap: SceneBootstrap
     {
         private DIContainer _container;
+        private MainMenuCycle _mainMenuCycle;
         
-        private WalletService _walletService;
-        
-        private PlayerDataProvider _playerDataProvider;
-        private ICoroutinesPerformer _coroutinesPerformer;
+        private bool _isRunning;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -30,48 +29,26 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            _walletService = _container.Resolve<WalletService>();
+            _mainMenuCycle = new MainMenuCycle(_container);
             
-            _playerDataProvider = _container.Resolve<PlayerDataProvider>();
-            _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-            
-            yield break;
+            yield return _mainMenuCycle.Prepare();
         }
 
         public override void Run()
         {
-            Debug.Log("MainMenuBootstrap running...");
+            _mainMenuCycle.Launch();
+
+            _isRunning = true;
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-                coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.Gameplay, new GameplayInputArgs(2)));
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                _walletService.Add(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
-            }
+            if (_isRunning == false)
+                return;
             
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                if (_walletService.Enough(CurrencyTypes.Gold, 10) == false)
-                    return;
-                
-                _walletService.Spend(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
-            }
-
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                _coroutinesPerformer.StartPerform(_playerDataProvider.Save());
-                Debug.Log("Data Saved");
-            }
+            _mainMenuCycle.Update(Time.deltaTime);
         }
+        
+        private void OnDestroy() => _mainMenuCycle?.Dispose();
     }
 }

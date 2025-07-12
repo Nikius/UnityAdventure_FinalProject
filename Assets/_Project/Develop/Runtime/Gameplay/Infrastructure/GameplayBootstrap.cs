@@ -13,8 +13,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
     {
         private DIContainer _container;
         private GameplayInputArgs _inputArgs;
+        private GameplayCycle _gameplayCycle;
         
-        private WalletService _walletService;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -30,43 +30,17 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public override IEnumerator Initialize()
         {
-            Debug.Log($"Current level: {_inputArgs.LevelNumber}");
+            Debug.Log($"Current level: {_inputArgs.SymbolsSetIndex}");
             
-            _walletService = _container.Resolve<WalletService>();
+            _gameplayCycle = new GameplayCycle(_container, _inputArgs);
             
-            Debug.Log("GameplayBootstrap initialized");
-            
-            yield break;
+            yield return _gameplayCycle.Prepare();
         }
 
-        public override void Run()
-        {
-            Debug.Log("GameplayBootstrap running...");
-        }
+        public override void Run() => _gameplayCycle.Launch();
         
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-                coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                _walletService.Add(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                if (_walletService.Enough(CurrencyTypes.Gold, 10) == false)
-                    return;
-                
-                _walletService.Spend(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
-            }
-        }
+        private void OnDestroy() => _gameplayCycle?.Dispose();
+        
+        private void Update() => _gameplayCycle?.Update(Time.deltaTime);
     }
 }
