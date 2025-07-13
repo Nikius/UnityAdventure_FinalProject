@@ -6,6 +6,7 @@ using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.DataManagement.DataRepository;
 using _Project.Develop.Runtime.Utilities.DataManagement.KeysStorage;
 using _Project.Develop.Runtime.Utilities.DataManagement.Serializers;
@@ -27,9 +28,13 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateSceneLoaderService);
             container.RegisterAsSingle<ILoadingScreen>(CreateLoadingScreen);
             container.RegisterAsSingle(CreateSceneSwitcherService);
-            container.RegisterAsSingle(CreateWalletService);
+            container.RegisterAsSingle(CreateWalletService).NonLazy();
             container.RegisterAsSingle<ISaveLoadService>(CreateSaveLoadService);
+            container.RegisterAsSingle(CreatePlayerDataProvider);
         }
+
+        private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
+            => new (c.Resolve<ISaveLoadService>(), c.Resolve<ConfigsProviderService>());
 
         private static SaveLoadService CreateSaveLoadService(DIContainer c)
         {
@@ -46,10 +51,10 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
         {
             Dictionary<CurrencyTypes, ReactiveVariable<int>> currencies = new();
 
-            foreach (CurrencyTypes currencyTypes in Enum.GetValues(typeof(CurrencyTypes)))
-                currencies[currencyTypes] = new ReactiveVariable<int>();
+            foreach (CurrencyTypes currencyType in Enum.GetValues(typeof(CurrencyTypes)))
+                currencies[currencyType] = new ReactiveVariable<int>();
             
-            return new WalletService(currencies);
+            return new WalletService(currencies, c.Resolve<PlayerDataProvider>());
         }
 
         private static SceneSwitcherService CreateSceneSwitcherService(DIContainer c)

@@ -2,6 +2,7 @@
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.LoadingScreen;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             DIContainer projectContainer = new DIContainer();
             
             ProjectContextRegistrations.Process(projectContainer);
+            
+            projectContainer.Initialize();
 
             projectContainer.Resolve<ICoroutinesPerformer>().StartPerform(Initialize(projectContainer));
         } 
@@ -35,12 +38,22 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
         {
             ILoadingScreen loadingScreen = container.Resolve<ILoadingScreen>();
             SceneSwitcherService sceneSwitcherService = container.Resolve<SceneSwitcherService>();
+            PlayerDataProvider playerDataProvider = container.Resolve<PlayerDataProvider>();
             
             loadingScreen.Show();
             
             Debug.Log("Начинается инициализация сервисов");
             
             yield return container.Resolve<ConfigsProviderService>().LoadAsync();
+
+            bool isPlayerDataSaveExists = false;
+            
+            yield return playerDataProvider.Exists(result => isPlayerDataSaveExists = result);
+
+            if (isPlayerDataSaveExists)
+                yield return playerDataProvider.Load();
+            else
+                playerDataProvider.Reset();
 
             yield return new WaitForSeconds(1f);
 

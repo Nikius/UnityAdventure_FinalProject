@@ -2,11 +2,12 @@
 
 namespace _Project.Develop.Runtime.Infrastructure.DI
 {
-    public class Registration
+    public class Registration: IRegistrationOptions
     {
         private readonly Func<DIContainer, object> _creator;
-        
         private object _cachedInstance;
+
+        public bool IsNonLazy { get; private set; }
 
         public Registration(Func<DIContainer, object> creator)
         {
@@ -25,5 +26,7 @@ namespace _Project.Develop.Runtime.Infrastructure.DI
             
             return _cachedInstance;
         }
+        
+        public void NonLazy() => IsNonLazy = true;
     }
 }

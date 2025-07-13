@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
-using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -17,8 +16,7 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         
         private WalletService _walletService;
         
-        private PlayerData _playerData;
-        private ISaveLoadService _saveLoadService;
+        private PlayerDataProvider _playerDataProvider;
         private ICoroutinesPerformer _coroutinesPerformer;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
@@ -33,16 +31,9 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             Debug.Log("MainMenuBootstrap initialized");
             
             _walletService = _container.Resolve<WalletService>();
-            _saveLoadService = _container.Resolve<ISaveLoadService>();
+            _playerDataProvider = _container.Resolve<PlayerDataProvider>();
             _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
             
-            _playerData = new PlayerData();
-            _playerData.WalletData = new Dictionary<CurrencyTypes, int>()
-            {
-                { CurrencyTypes.Gold, 5 },
-                { CurrencyTypes.Diamond, 10 }
-            };
-
             yield break;
         }
 
@@ -77,24 +68,9 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
 
             if (Input.GetKeyDown(KeyCode.S))
             {
-                _coroutinesPerformer.StartPerform(_saveLoadService.Save(_playerData));
+                _coroutinesPerformer.StartPerform(_playerDataProvider.Save());
                 Debug.Log("Data Saved");
             }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                _coroutinesPerformer.StartPerform(LoadPlayerData());
-            }
-        }
-
-        private IEnumerator LoadPlayerData()
-        {
-            PlayerData loadedPlayerData = null;
-            
-            yield return _saveLoadService.Load<PlayerData>(data => loadedPlayerData = data);
-            
-            Debug.Log("Gold: " + loadedPlayerData.WalletData[CurrencyTypes.Gold]);
-            Debug.Log("Diamond: " + loadedPlayerData.WalletData[CurrencyTypes.Diamond]);
         }
     }
 }
