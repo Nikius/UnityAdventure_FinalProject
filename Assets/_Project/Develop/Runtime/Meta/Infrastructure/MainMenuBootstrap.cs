@@ -1,11 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Controllers;
-using _Project.Develop.Runtime.Utilities.DataManagement;
+using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -20,8 +19,7 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         
         private bool _isRunning;
         
-        private PlayerData _playerData;
-        private ISaveLoadService _saveLoadService;
+        private PlayerDataProvider _playerDataProvider;
         private ICoroutinesPerformer _coroutinesPerformer;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
@@ -36,20 +34,12 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             Debug.Log("MainMenuBootstrap initialized");
             
             _walletService = _container.Resolve<WalletService>();
-            _saveLoadService = _container.Resolve<ISaveLoadService>();
+            _playerDataProvider = _container.Resolve<PlayerDataProvider>();
             _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
             
             _selectSymbolsSetController = new SelectSymbolsSetController(_container);
-            
             _selectSymbolsSetController.Initialize();
             
-            _playerData = new PlayerData();
-            _playerData.WalletData = new Dictionary<CurrencyTypes, int>()
-            {
-                { CurrencyTypes.Gold, 5 },
-                { CurrencyTypes.Diamond, 10 }
-            };
-
             yield break;
         }
 
@@ -73,16 +63,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         public override void Dispose()
         {
             //
-        }
-        
-        private IEnumerator LoadPlayerData()
-        {
-            PlayerData loadedPlayerData = null;
-            
-            yield return _saveLoadService.Load<PlayerData>(data => loadedPlayerData = data);
-            
-            Debug.Log("Gold: " + loadedPlayerData.WalletData[CurrencyTypes.Gold]);
-            Debug.Log("Diamond: " + loadedPlayerData.WalletData[CurrencyTypes.Diamond]);
         }
     }
 }
