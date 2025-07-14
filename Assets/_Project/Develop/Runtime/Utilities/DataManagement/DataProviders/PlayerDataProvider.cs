@@ -8,7 +8,7 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
 {
     public class PlayerDataProvider: DataProvider<PlayerData>
     {
-        private ConfigsProviderService _configsProviderService;
+        private readonly ConfigsProviderService _configsProviderService;
         
         public PlayerDataProvider(ISaveLoadService saveLoadService, ConfigsProviderService configsProviderService) : base(saveLoadService)
         {
@@ -20,6 +20,8 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
             return new PlayerData()
             {
                 WalletData = InitWalletData(),
+                Wins = 0,
+                Looses = 0,
                 CompletedLevels = new()
             };
         }

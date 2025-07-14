@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.Services;
+using _Project.Develop.Runtime.Gameplay.Controllers;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private readonly DIContainer _container;
         private readonly GameplayInputArgs _inputArgs;
         private GameMode _gameMode;
+        private RestartController _restartController;
         
         private bool _isGameOver;
 
@@ -23,6 +25,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         public IEnumerator Prepare()
         {
             _gameMode = new GameMode(_container, _inputArgs);
+            _restartController = new RestartController(_container);
             
             yield break;
         }
@@ -38,9 +41,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         public void Update(float deltaTime)
         {
             _gameMode?.Update(deltaTime);
-            
-            if (_isGameOver && Input.GetKeyDown(KeyCode.Space))
-                RestartGameService.RestartGame(_container);
+            _restartController?.Update(deltaTime);
         } 
         
         public void Dispose()
@@ -60,6 +61,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             }
             
             _isGameOver = true;
+            _restartController.Enable();
             
             Debug.Log("Press Space to restart the game.");
         }
