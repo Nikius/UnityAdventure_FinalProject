@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using _Project.Develop.Runtime.Configs;
-using _Project.Develop.Runtime.Gameplay.Infrastructure;
+﻿using System.Collections;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Utilities.ConfigsManagement;
-using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
+using _Project.Develop.Runtime.Meta.Controllers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -14,7 +10,7 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     public class MainMenuBootstrap: SceneBootstrap
     {
         private DIContainer _container;
-        private MainMenuCycle _mainMenuCycle;
+        private SelectSymbolsSetController _selectSymbolsSetController;
         
         private bool _isRunning;
 
@@ -29,14 +25,16 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            _mainMenuCycle = new MainMenuCycle(_container);
+            _selectSymbolsSetController = new SelectSymbolsSetController(_container);
             
-            yield return _mainMenuCycle.Prepare();
+            _selectSymbolsSetController.Initialize();
+            
+            yield break;
         }
 
         public override void Run()
         {
-            _mainMenuCycle.Launch();
+            _selectSymbolsSetController.ShowSelectRequest();
 
             _isRunning = true;
         }
@@ -45,10 +43,15 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             if (_isRunning == false)
                 return;
-            
-            _mainMenuCycle.Update(Time.deltaTime);
+
+            _selectSymbolsSetController.Update();
         }
         
-        private void OnDestroy() => _mainMenuCycle?.Dispose();
+        private void OnDestroy() => Dispose();
+
+        public override void Dispose()
+        {
+            //
+        }
     }
 }
