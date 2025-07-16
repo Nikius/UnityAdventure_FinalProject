@@ -1,5 +1,6 @@
 ﻿using System;
 using _Project.Develop.Runtime.Configs;
+using _Project.Develop.Runtime.Gameplay.Controller;
 using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
@@ -7,18 +8,19 @@ using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
-    public class GameMode
+    public class GameMode: IDisposable
     {
         public event Action Win;
         public event Action Defeat;
         
         private readonly DIContainer _container;
         private readonly GameplayInputArgs _inputArgs;
+        private UserInputValidationService _userInputValidationService;
+        private UserInputController _userInputController;
         
         private bool _isRunning;
         
         private string _stringForType;
-        private string _userInput;
 
         public GameMode(DIContainer container, GameplayInputArgs inputArgs)
         {
@@ -29,9 +31,31 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         public void Start()
         {
             _isRunning = true;
+
             _stringForType = GenerateString();
             
+            _userInputValidationService = new UserInputValidationService(_stringForType);
+            
+            _userInputController = new UserInputController();
+            _userInputController.UserInput.Subscribe(OnUserInputUpdated);
+            
+
             Debug.Log($"Type this string: {_stringForType}");
+        }
+
+        private void OnUserInputUpdated(string oldInput, string newInput)
+        {
+            if (DefeatConditionCompleted())
+            {
+                ProcessDefeat();
+                return;
+            }
+
+            if (WinConditionCompleted())
+            {
+                ProcessWin();
+                return;
+            }
         }
 
         public void Update(float deltaTime)
@@ -39,22 +63,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             if (_isRunning == false)
                 return;
             
-            if (!string.IsNullOrEmpty(Input.inputString) && _stringForType != null)
-            {
-                _userInput += Input.inputString;
-                
-                if (DefeatConditionCompleted())
-                {
-                    ProcessDefeat();
-                    return;
-                }
-
-                if (WinConditionCompleted())
-                {
-                    ProcessWin();
-                    return;
-                }
-            }
+            _userInputController.Update();
         }
         
         private void ProcessEndGame()
@@ -76,24 +85,27 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         private bool WinConditionCompleted()
         {
-            return _userInput == _stringForType;
+            return _userInputValidationService.IsEqual(_userInputController.UserInput.Value);
         }
 
         private bool DefeatConditionCompleted()
         {
-            return _stringForType.IndexOf(_userInput) != 0;
+            return _userInputValidationService.IsValid(_userInputController.UserInput.Value) == false;
         }
         
         private string GenerateString()
         {
             ConfigsProviderService configsProviderService = _container.Resolve<ConfigsProviderService>();
-            StringGeneratorService stringGeneratorService = _container.Resolve<StringGeneratorService>();
-
             GameModesConfig gameModesConfig = configsProviderService.GetConfig<GameModesConfig>();
             
             string symbolsSet = gameModesConfig.SymbolsSets[_inputArgs.SymbolsSetIndex];
-            
-            return stringGeneratorService.GenerateString(gameModesConfig.LengthOfStringForType, symbolsSet);
+
+            return StringGeneratorService.GenerateString(gameModesConfig.LengthOfStringForType, symbolsSet);
+        }
+
+        public void Dispose()
+        {
+            //
         }
     }
 }

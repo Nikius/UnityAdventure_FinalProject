@@ -4,7 +4,7 @@ namespace _Project.Develop.Runtime.Gameplay.Services
 {
     public class StringGeneratorService
     {
-        public string GenerateString(int length, string symbolsSet)
+        public static string GenerateString(int length, string symbolsSet)
         {
             string generatedString = "";
             

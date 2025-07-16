@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
+using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
-using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
@@ -25,7 +24,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         {
             _gameMode = new GameMode(_container, _inputArgs);
             
-            yield return null;
+            yield break;
         }
         
         public void Launch()
@@ -41,11 +40,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             _gameMode?.Update(deltaTime);
             
             if (_isGameOver && Input.GetKeyDown(KeyCode.Space))
-            {
-                SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
-                ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-                coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
-            }
+                RestartGameService.RestartGame(_container);
         } 
         
         public void Dispose()
@@ -60,6 +55,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             {
                 _gameMode.Win -= OnGameModeWin;
                 _gameMode.Defeat -= OnGameModeDefeat;
+                
+                _gameMode.Dispose();
             }
             
             _isGameOver = true;

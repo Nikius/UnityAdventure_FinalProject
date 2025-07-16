@@ -23,6 +23,9 @@ namespace _Project.Develop.Runtime.Utilities.SceneManagement
         public IEnumerator ProcessSwitchTo(string sceneName, IInputSceneArgs sceneArgs = null)
         {
             _loadingScreen.Show();
+            
+            SceneBootstrap currentSceneBootstrap = Object.FindObjectOfType<SceneBootstrap>();
+            currentSceneBootstrap?.Dispose();
 
             yield return _sceneLoaderService.LoadAsync(Scenes.Empty);
             yield return _sceneLoaderService.LoadAsync(sceneName);

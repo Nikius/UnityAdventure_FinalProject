@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
-using _Project.Develop.Runtime.Configs;
-using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Utilities.ConfigsManagement;
-using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -40,8 +36,9 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public override void Run() => _gameplayCycle.Launch();
         
-        private void OnDestroy() => _gameplayCycle?.Dispose();
-        
         private void Update() => _gameplayCycle?.Update(Time.deltaTime);
+        
+        private void OnDestroy() => Dispose();
+        public override void Dispose() => _gameplayCycle?.Dispose();
     }
 }
