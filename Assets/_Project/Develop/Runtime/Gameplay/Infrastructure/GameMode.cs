@@ -1,6 +1,6 @@
 ﻿using System;
 using _Project.Develop.Runtime.Configs;
-using _Project.Develop.Runtime.Gameplay.Controller;
+using _Project.Develop.Runtime.Gameplay.Controllers;
 using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;

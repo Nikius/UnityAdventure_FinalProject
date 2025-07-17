@@ -2,7 +2,7 @@
 
 namespace _Project.Develop.Runtime.Gameplay.Services
 {
-    public class StringGeneratorService
+    public static class StringGeneratorService
     {
         public static string GenerateString(int length, string symbolsSet)
         {

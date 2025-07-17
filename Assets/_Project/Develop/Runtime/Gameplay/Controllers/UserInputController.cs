@@ -1,7 +1,7 @@
-﻿using Assets._Project.Develop.Runtime.Utilities.Reactive;
+﻿using _Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
 
-namespace _Project.Develop.Runtime.Gameplay.Controller
+namespace _Project.Develop.Runtime.Gameplay.Controllers
 {
     public class UserInputController
     {
