@@ -1,11 +1,7 @@
 using System.Collections;
-using _Project.Develop.Runtime.Gameplay.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Meta.Controllers;
-using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
-using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -15,13 +11,13 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     {
         private DIContainer _container;
         
-        private WalletService _walletService;
         private SelectSymbolsSetController _selectSymbolsSetController;
-        
+        private ShowPlayerDataController _showPlayerDataController;
+        private ResetScoreController _resetScoreController;
+
         private bool _isRunning;
-        
-        private PlayerDataProvider _playerDataProvider;
-        private ICoroutinesPerformer _coroutinesPerformer;
+
+        private void OnDestroy() => Dispose();
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -34,19 +30,25 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            _walletService = _container.Resolve<WalletService>();
-            _playerDataProvider = _container.Resolve<PlayerDataProvider>();
-            _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
-            
             _selectSymbolsSetController = new SelectSymbolsSetController(_container);
             _selectSymbolsSetController.Initialize();
+            
+            _showPlayerDataController = new ShowPlayerDataController(_container);
+            
+            _resetScoreController = new ResetScoreController(_container);
+            _resetScoreController.Initialize();
             
             yield break;
         }
 
         public override void Run()
         {
+            _selectSymbolsSetController.Enable();
             _selectSymbolsSetController.ShowSelectRequest();
+            
+            _showPlayerDataController.Enable();
+            
+            _resetScoreController.Enable();
 
             _isRunning = true;
         }
@@ -56,10 +58,10 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             if (_isRunning == false)
                 return;
 
-            _selectSymbolsSetController.Update();
+            _selectSymbolsSetController.Update(Time.deltaTime);
+            _showPlayerDataController.Update(Time.deltaTime);
+            _resetScoreController.Update(Time.deltaTime);
         }
-        
-        private void OnDestroy() => Dispose();
 
         public override void Dispose()
         {

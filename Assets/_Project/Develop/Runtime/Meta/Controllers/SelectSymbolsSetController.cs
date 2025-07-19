@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
+using _Project.Develop.Runtime.Common.Controllers;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Service;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Meta.Controllers
 {
-    public class SelectSymbolsSetController
+    public class SelectSymbolsSetController: Controller
     {
         private const int KeyCodeAlpha1 = (int)KeyCode.Alpha1;
         
-        private readonly DIContainer _container;
         
         private List<string> _symbolsSets;
 
-        public SelectSymbolsSetController(DIContainer container)
-        {
-            _container = container;
-        }
+        public SelectSymbolsSetController(DIContainer container): base(container)
+        {}
 
         public void Initialize()
         {
-            _symbolsSets = SymbolsSetService.LoadSymbolsSets(_container);
+            _symbolsSets = SymbolsSetService.LoadSymbolsSets(Container);
         }
 
         public void ShowSelectRequest()
@@ -31,12 +29,12 @@ namespace _Project.Develop.Runtime.Meta.Controllers
                 Debug.Log($"{i+1}. {_symbolsSets[i]}");
         }
 
-        public void Update()
+        protected override void UpdateLogic(float deltaTime)
         {
             if (Input.anyKeyDown)
                 for (int i = KeyCodeAlpha1; i < KeyCodeAlpha1 + _symbolsSets.Count; i++)
                     if (Input.GetKeyDown((KeyCode)i))
-                        StartGameService.StartGame(_container, i - KeyCodeAlpha1);
+                        StartGameService.StartGame(Container, i - KeyCodeAlpha1);
         }
     }
 }
