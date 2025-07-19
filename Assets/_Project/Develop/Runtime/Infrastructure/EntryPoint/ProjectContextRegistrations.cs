@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.Score;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
@@ -29,12 +30,16 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle<ILoadingScreen>(CreateLoadingScreen);
             container.RegisterAsSingle(CreateSceneSwitcherService);
             container.RegisterAsSingle(CreateWalletService).NonLazy();
+            container.RegisterAsSingle(CreateScoreService).NonLazy();
             container.RegisterAsSingle<ISaveLoadService>(CreateSaveLoadService);
             container.RegisterAsSingle(CreatePlayerDataProvider);
+            container.RegisterAsSingle(CreateAutosaveService);
         }
 
         private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
             => new (c.Resolve<ISaveLoadService>(), c.Resolve<ConfigsProviderService>());
+        
+        private static AutosaveService CreateAutosaveService(DIContainer c) => new (c);
 
         private static SaveLoadService CreateSaveLoadService(DIContainer c)
         {
@@ -55,6 +60,16 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
                 currencies[currencyType] = new ReactiveVariable<int>();
             
             return new WalletService(currencies, c.Resolve<PlayerDataProvider>());
+        }
+        
+        private static ScoreService CreateScoreService(DIContainer c)
+        {
+            Dictionary<ScoreTypes, ReactiveVariable<int>> scores = new();
+
+            foreach (ScoreTypes scoreType in Enum.GetValues(typeof(ScoreTypes)))
+                scores[scoreType] = new ReactiveVariable<int>();
+            
+            return new ScoreService(scores, c.Resolve<PlayerDataProvider>());
         }
 
         private static SceneSwitcherService CreateSceneSwitcherService(DIContainer c)

@@ -26,7 +26,7 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             projectContainer.Initialize();
 
             projectContainer.Resolve<ICoroutinesPerformer>().StartPerform(Initialize(projectContainer));
-        } 
+        }
 
         private void SetupAppSettings()
         {

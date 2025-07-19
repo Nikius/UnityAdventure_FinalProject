@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Configs.Meta.Wallet;
+using _Project.Develop.Runtime.Meta.Features.Score;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 
@@ -17,11 +18,10 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
 
         protected override PlayerData GetOriginData()
         {
-            return new PlayerData()
+            return new PlayerData
             {
                 WalletData = InitWalletData(),
-                Wins = 0,
-                Looses = 0
+                ScoreData = InitScoreData(),
             };
         }
 
@@ -35,6 +35,16 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
                 walletData[currencyType] = walletConfig.GetValueFor(currencyType);
             
             return walletData;
+        }
+
+        private Dictionary<ScoreTypes, int> InitScoreData()
+        {
+            Dictionary<ScoreTypes, int> scoreData = new();
+
+            foreach (ScoreTypes scoreType in Enum.GetValues(typeof(ScoreTypes)))
+                scoreData[scoreType] = 0;
+            
+            return scoreData;
         }
     }
 }
