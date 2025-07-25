@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Runtime.UI;
+using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
@@ -31,7 +33,14 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreateWalletService).NonLazy();
             container.RegisterAsSingle<ISaveLoadService>(CreateSaveLoadService);
             container.RegisterAsSingle(CreatePlayerDataProvider);
+            container.RegisterAsSingle(CreateProjectPresenterFactory);
+            container.RegisterAsSingle(CreateViewsFactory);
         }
+        
+        private static ViewsFactory CreateViewsFactory(DIContainer c)
+            => new(c.Resolve<ResourcesAssetsLoader>());
+
+        private static ProjectPresenterFactory CreateProjectPresenterFactory(DIContainer c) => new(c);
 
         private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
             => new (c.Resolve<ISaveLoadService>(), c.Resolve<ConfigsProviderService>());

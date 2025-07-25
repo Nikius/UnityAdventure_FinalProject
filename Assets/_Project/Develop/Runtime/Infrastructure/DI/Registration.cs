@@ -26,6 +26,18 @@ namespace _Project.Develop.Runtime.Infrastructure.DI
             
             return _cachedInstance;
         }
+
+        public void OnInitialize()
+        {
+            if (_cachedInstance is IInitializable initializable)
+                initializable.Initialize();
+        }
+
+        public void OnDispose()
+        {
+            if (_cachedInstance is IDisposable disposable)
+                disposable.Dispose();
+        }
         
         public void NonLazy() => IsNonLazy = true;
     }

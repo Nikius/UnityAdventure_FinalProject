@@ -31,6 +31,7 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             Debug.Log("MainMenuBootstrap initialized");
             
             _walletService = _container.Resolve<WalletService>();
+            
             _playerDataProvider = _container.Resolve<PlayerDataProvider>();
             _coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
             
