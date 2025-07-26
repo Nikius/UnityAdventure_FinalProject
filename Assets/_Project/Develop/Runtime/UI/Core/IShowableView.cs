@@ -1,8 +1,10 @@
-﻿namespace _Project.Develop.Runtime.UI.Core
+﻿using DG.Tweening;
+
+namespace _Project.Develop.Runtime.UI.Core
 {
     public interface IShowableView: IView
     {
-        void Hide();
-        void Show();
+        Tween Hide();
+        Tween Show();
     }
 }
