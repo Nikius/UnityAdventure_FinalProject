@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.UI.Core.TestPopup;
+using _Project.Develop.Runtime.UI.LevelsMenuPopup;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.UI.Core
@@ -9,15 +10,15 @@ namespace _Project.Develop.Runtime.UI.Core
     {
         protected readonly ViewsFactory ViewsFactory;
 
-        private readonly ProjectPresenterFactory _presenterFactory;
+        private readonly ProjectPresentersFactory _presentersFactory;
         private readonly Dictionary<PopupPresenterBase, PopupInfo> _presenterToInfo = new();
 
     protected PopupService(
             ViewsFactory viewsFactory,
-            ProjectPresenterFactory presenterFactory
+            ProjectPresentersFactory presentersFactory
         ) {
             ViewsFactory = viewsFactory;
-            _presenterFactory = presenterFactory;
+            _presentersFactory = presentersFactory;
         }
 
         protected abstract Transform PopupLayer { get; }
@@ -26,9 +27,20 @@ namespace _Project.Develop.Runtime.UI.Core
         {
             TestPopupView view = ViewsFactory.Create<TestPopupView>(ViewIDs.TestPopup, PopupLayer);
             
-            TestPopupPresenter popup = _presenterFactory.CreateTestPopupPresenter(view);
+            TestPopupPresenter popup = _presentersFactory.CreateTestPopupPresenter(view);
             
             OnPopupCreated(popup, view, closedCallback);
+
+            return popup;
+        }
+        
+        public LevelsMenuPopupPresenter OpenLevelsMenuPopup()
+        {
+            LevelsMenuPopupView view = ViewsFactory.Create<LevelsMenuPopupView>(ViewIDs.LevelsMenuPopup, PopupLayer);
+
+            LevelsMenuPopupPresenter popup = _presentersFactory.CreateLevelsMenuPopupPresenter(view);
+
+            OnPopupCreated(popup, view);
 
             return popup;
         }

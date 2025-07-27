@@ -8,7 +8,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
     {
         private readonly MainMenuScreenView _screen;
         
-        private readonly ProjectPresenterFactory _projectPresenterFactory;
+        private readonly ProjectPresentersFactory _projectPresentersFactory;
         
         private readonly MainMenuPopupService _popupService;
         
@@ -16,17 +16,17 @@ namespace _Project.Develop.Runtime.UI.MainMenu
 
         public MainMenuScreenPresenter(
             MainMenuScreenView screen,
-            ProjectPresenterFactory projectPresenterFactory,
+            ProjectPresentersFactory projectPresentersFactory,
             MainMenuPopupService popupService
         ) {
             _screen = screen;
-            _projectPresenterFactory = projectPresenterFactory;
+            _projectPresentersFactory = projectPresentersFactory;
             _popupService = popupService;
         }
 
         public void Initialize()
         {
-            _screen.OpenTestPopupButtonClicked += OpenTestPopupButtonClicked;
+            _screen.OpenLevelsMenuButtonClicked += OpenLevelsMenuButtonClicked;
             
             CreateWallet();
 
@@ -36,7 +36,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
 
         public void Dispose()
         {
-            _screen.OpenTestPopupButtonClicked -= OpenTestPopupButtonClicked;
+            _screen.OpenLevelsMenuButtonClicked -= OpenLevelsMenuButtonClicked;
             
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Dispose();
@@ -44,14 +44,14 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _childPresenters.Clear();
         }
 
-        private void OpenTestPopupButtonClicked()
+        private void OpenLevelsMenuButtonClicked()
         {
-            _popupService.OpenTestPopup();
+            _popupService.OpenLevelsMenuPopup();
         }
 
         private void CreateWallet()
         {
-            WalletPresenter walletPresenter = _projectPresenterFactory.CreateWalletPresenter(_screen.WalletView);
+            WalletPresenter walletPresenter = _projectPresentersFactory.CreateWalletPresenter(_screen.WalletView);
             _childPresenters.Add(walletPresenter);
         }
     }

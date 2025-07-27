@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.LevelsProgression;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.UI;
 using _Project.Develop.Runtime.UI.Core;
@@ -35,12 +36,16 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             container.RegisterAsSingle(CreatePlayerDataProvider);
             container.RegisterAsSingle(CreateProjectPresenterFactory);
             container.RegisterAsSingle(CreateViewsFactory);
+            container.RegisterAsSingle(CreateLevelsProgressionService).NonLazy();
         }
+
+        private static LevelsProgressionService CreateLevelsProgressionService(DIContainer c)
+            => new LevelsProgressionService(c.Resolve<PlayerDataProvider>());
         
         private static ViewsFactory CreateViewsFactory(DIContainer c)
             => new(c.Resolve<ResourcesAssetsLoader>());
 
-        private static ProjectPresenterFactory CreateProjectPresenterFactory(DIContainer c) => new(c);
+        private static ProjectPresentersFactory CreateProjectPresenterFactory(DIContainer c) => new(c);
 
         private static PlayerDataProvider CreatePlayerDataProvider(DIContainer c)
             => new (c.Resolve<ISaveLoadService>(), c.Resolve<ConfigsProviderService>());
