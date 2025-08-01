@@ -55,8 +55,6 @@ namespace _Project.Develop.Runtime.Infrastructure.EntryPoint
             else
                 playerDataProvider.Reset();
 
-            yield return new WaitForSeconds(1f);
-
             Debug.Log("Завершается инициализация сервисов");
 
             loadingScreen.Hide();

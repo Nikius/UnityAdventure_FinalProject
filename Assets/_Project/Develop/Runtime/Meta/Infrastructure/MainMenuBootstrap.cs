@@ -12,7 +12,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         private DIContainer _container;
         
         private SelectSymbolsSetController _selectSymbolsSetController;
-        private ShowPlayerDataController _showPlayerDataController;
         private ResetScoreController _resetScoreController;
 
         private bool _isRunning;
@@ -33,8 +32,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             _selectSymbolsSetController = new SelectSymbolsSetController(_container);
             _selectSymbolsSetController.Initialize();
             
-            _showPlayerDataController = new ShowPlayerDataController(_container);
-            
             _resetScoreController = new ResetScoreController(_container);
             _resetScoreController.Initialize();
             
@@ -45,8 +42,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             _selectSymbolsSetController.Enable();
             _selectSymbolsSetController.ShowSelectRequest();
-            
-            _showPlayerDataController.Enable();
             
             _resetScoreController.Enable();
 
@@ -59,7 +54,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
                 return;
 
             _selectSymbolsSetController.Update(Time.deltaTime);
-            _showPlayerDataController.Update(Time.deltaTime);
             _resetScoreController.Update(Time.deltaTime);
         }
 

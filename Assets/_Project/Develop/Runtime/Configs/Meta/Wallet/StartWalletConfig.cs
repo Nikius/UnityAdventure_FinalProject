@@ -8,7 +8,7 @@ namespace _Project.Develop.Runtime.Configs.Meta.Wallet
     [CreateAssetMenu(menuName = "Configs/Meta/Wallet/NewStartWalletConfig", fileName = "StartWalletConfig")]
     public class StartWalletConfig: ScriptableObject
     {
-        [field: SerializeField] private List<CurrencyConfig> _values;
+        [field: SerializeField] private List<MoneyConfig> _values;
         
         public int GetValueFor(CurrencyTypes currencyType)
             => _values.First(config => config.Type == currencyType).Value;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using _Project.Develop.Runtime.Utilities.DataManagement;
 using _Project.Develop.Runtime.Utilities.DataManagement.DataProviders;
 using _Project.Develop.Runtime.Utilities.Reactive;
@@ -21,6 +22,8 @@ namespace _Project.Develop.Runtime.Meta.Features.Score
         }
         
         public IReadOnlyVariable<int> GetScore(ScoreTypes type) => _scores[type];
+        
+        public List<ScoreTypes> AvailableScores => _scores.Keys.ToList();
 
         public void ReadFrom(PlayerData data)
         {

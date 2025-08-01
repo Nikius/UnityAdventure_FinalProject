@@ -1,11 +1,13 @@
 ﻿using _Project.Develop.Runtime.Configs.Meta.Wallet;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.LevelsProgression;
+using _Project.Develop.Runtime.Meta.Features.Score;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.UI.CommonViews;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.Core.TestPopup;
 using _Project.Develop.Runtime.UI.LevelsMenuPopup;
+using _Project.Develop.Runtime.UI.Score;
 using _Project.Develop.Runtime.UI.Wallet;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
@@ -70,6 +72,24 @@ namespace _Project.Develop.Runtime.UI
             return new LevelsMenuPopupPresenter(
                 _container.Resolve<ICoroutinesPerformer>(),
                 _container.Resolve<ConfigsProviderService>(),
+                this,
+                _container.Resolve<ViewsFactory>(),
+                view
+            );
+        }
+
+        public ScoreItemPresenter CreateScoreItemPresenter(
+            ScoreItemView view,
+            IReadOnlyVariable<int> score,
+            ScoreTypes scoreType
+        ) {
+            return new ScoreItemPresenter(score, scoreType, view);
+        }
+        
+        public ScoreListPresenter CreateScoreListPresenter(ScoreListView view)
+        {
+            return new ScoreListPresenter(
+                _container.Resolve<ScoreService>(),
                 this,
                 _container.Resolve<ViewsFactory>(),
                 view

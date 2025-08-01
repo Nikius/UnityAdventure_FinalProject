@@ -5,7 +5,7 @@ using UnityEngine;
 namespace _Project.Develop.Runtime.Configs
 {
     [Serializable]
-    public class CurrencyConfig
+    public class MoneyConfig
     {
         [field: SerializeField] public CurrencyTypes Type { get; private set; }
         [field: SerializeField] public int Value { get; private set; }

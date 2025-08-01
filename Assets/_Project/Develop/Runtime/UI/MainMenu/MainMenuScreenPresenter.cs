@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using _Project.Develop.Runtime.UI.Core;
+using _Project.Develop.Runtime.UI.Score;
 using _Project.Develop.Runtime.UI.Wallet;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
@@ -29,6 +30,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _screen.OpenLevelsMenuButtonClicked += OpenLevelsMenuButtonClicked;
             
             CreateWallet();
+            CreateScoreList();
 
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Initialize();
@@ -53,6 +55,12 @@ namespace _Project.Develop.Runtime.UI.MainMenu
         {
             WalletPresenter walletPresenter = _projectPresentersFactory.CreateWalletPresenter(_screen.WalletView);
             _childPresenters.Add(walletPresenter);
+        }
+
+        private void CreateScoreList()
+        {
+            ScoreListPresenter scoreListPresenter = _projectPresentersFactory.CreateScoreListPresenter(_screen.ScoreListView);
+            _childPresenters.Add(scoreListPresenter);
         }
     }
 }

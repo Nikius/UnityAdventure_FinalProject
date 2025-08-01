@@ -10,9 +10,9 @@ namespace _Project.Develop.Runtime.Configs
         [field: SerializeField] public int LengthOfStringForType { get; private set; }
         [field: SerializeField] public List<string> SymbolsSets { get; private set; }
         
-        [field: SerializeField] public CurrencyConfig Reward { get; private set; }
-        [field: SerializeField] public CurrencyConfig Penalty { get; private set; }
-        [field: SerializeField] public CurrencyConfig ResetScorePrice { get; private set; }
+        [field: SerializeField] public MoneyConfig Reward { get; private set; }
+        [field: SerializeField] public MoneyConfig Penalty { get; private set; }
+        [field: SerializeField] public MoneyConfig ResetScorePrice { get; private set; }
         
         void OnValidate()
         {
