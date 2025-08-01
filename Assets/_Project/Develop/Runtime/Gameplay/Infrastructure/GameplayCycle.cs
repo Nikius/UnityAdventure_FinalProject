@@ -3,6 +3,7 @@ using System.Collections;
 using _Project.Develop.Runtime.Configs;
 using _Project.Develop.Runtime.Gameplay.Controllers;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.LevelsProgression;
 using _Project.Develop.Runtime.Meta.Features.Score;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
@@ -19,6 +20,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private RestartController _restartController;
         private ScoreService _scoreService;
         private WalletService _walletService;
+        private LevelsProgressionService _levelsProgressionService;
         private GameModesConfig _gameModesConfig;
         
         private bool _isGameOver;
@@ -35,6 +37,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             _restartController = new RestartController(_container);
             _scoreService = _container.Resolve<ScoreService>();
             _walletService = _container.Resolve<WalletService>();
+            _levelsProgressionService = _container.Resolve<LevelsProgressionService>();
             
             ConfigsProviderService configsProviderService = _container.Resolve<ConfigsProviderService>();
             _gameModesConfig = configsProviderService.GetConfig<GameModesConfig>();
@@ -68,8 +71,6 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             
             _isGameOver = true;
             _restartController.Enable();
-            
-            RunAutosave();
 
             Debug.Log("Press Space to restart the game.");
         }
@@ -98,6 +99,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             IncreaseLoosesCount();
             AddPenalty();
             
+            RunAutosave();
+            
             OnGameModeEnded();
         }
 
@@ -107,8 +110,16 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             
             IncreaseWinsCount();
             AddReward();
+            AddLevelToCompleted(_inputArgs.LevelNumber);
+            
+            RunAutosave();
             
             OnGameModeEnded();
+        }
+
+        private void AddLevelToCompleted(int levelNumber)
+        {
+            _levelsProgressionService.AddLevelToCompleted(levelNumber);
         }
 
         private void AddPenalty()

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections;
-using _Project.Develop.Runtime.Configs;
-using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
@@ -29,7 +27,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         public override IEnumerator Initialize()
         {
-            Debug.Log($"Current level: {_inputArgs.SymbolsSetIndex}");
+            Debug.Log($"Current level: {_inputArgs.LevelNumber}");
             
             _gameplayCycle = new GameplayCycle(_container, _inputArgs);
             

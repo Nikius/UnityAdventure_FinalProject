@@ -11,7 +11,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     {
         private DIContainer _container;
         
-        private SelectSymbolsSetController _selectSymbolsSetController;
         private ResetScoreController _resetScoreController;
 
         private bool _isRunning;
@@ -29,9 +28,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            _selectSymbolsSetController = new SelectSymbolsSetController(_container);
-            _selectSymbolsSetController.Initialize();
-            
             _resetScoreController = new ResetScoreController(_container);
             _resetScoreController.Initialize();
             
@@ -40,9 +36,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
 
         public override void Run()
         {
-            _selectSymbolsSetController.Enable();
-            _selectSymbolsSetController.ShowSelectRequest();
-            
             _resetScoreController.Enable();
 
             _isRunning = true;
@@ -53,7 +46,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             if (_isRunning == false)
                 return;
 
-            _selectSymbolsSetController.Update(Time.deltaTime);
             _resetScoreController.Update(Time.deltaTime);
         }
 

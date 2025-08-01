@@ -1,5 +1,5 @@
 ﻿using System;
-using _Project.Develop.Runtime.Configs;
+using _Project.Develop.Runtime.Configs.Gameplay.Levels;
 using _Project.Develop.Runtime.Gameplay.Controllers;
 using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure.DI;
@@ -95,12 +95,16 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         
         private string GenerateString()
         {
-            ConfigsProviderService configsProviderService = _container.Resolve<ConfigsProviderService>();
-            GameModesConfig gameModesConfig = configsProviderService.GetConfig<GameModesConfig>();
-            
-            string symbolsSet = gameModesConfig.SymbolsSets[_inputArgs.SymbolsSetIndex];
+            LevelConfig levelConfig = GetLevelConfig();
 
-            return StringGeneratorService.GenerateString(gameModesConfig.LengthOfStringForType, symbolsSet);
+            return StringGeneratorService.GenerateString(levelConfig.LengthOfStringForType, levelConfig.SymbolsSet);
+        }
+
+        private LevelConfig GetLevelConfig()
+        {
+            ConfigsProviderService configsProviderService = _container.Resolve<ConfigsProviderService>();
+            LevelsListConfig levelsListConfig = configsProviderService.GetConfig<LevelsListConfig>();
+            return levelsListConfig.GetBy(_inputArgs.LevelNumber);
         }
 
         public void Dispose()
