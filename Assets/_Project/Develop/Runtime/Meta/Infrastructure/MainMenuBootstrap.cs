@@ -1,7 +1,6 @@
 using System.Collections;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
-using _Project.Develop.Runtime.Meta.Controllers;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
 
@@ -11,8 +10,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
     {
         private DIContainer _container;
         
-        private ResetScoreController _resetScoreController;
-
         private bool _isRunning;
 
         private void OnDestroy() => Dispose();
@@ -28,16 +25,11 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             Debug.Log("MainMenuBootstrap initialized");
             
-            _resetScoreController = new ResetScoreController(_container);
-            _resetScoreController.Initialize();
-            
             yield break;
         }
 
         public override void Run()
         {
-            _resetScoreController.Enable();
-
             _isRunning = true;
         }
 
@@ -45,8 +37,6 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
         {
             if (_isRunning == false)
                 return;
-
-            _resetScoreController.Update(Time.deltaTime);
         }
 
         public override void Dispose()

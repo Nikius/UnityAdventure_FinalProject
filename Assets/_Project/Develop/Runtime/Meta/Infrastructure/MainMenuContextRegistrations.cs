@@ -1,8 +1,13 @@
-﻿using _Project.Develop.Runtime.Infrastructure.DI;
+﻿using _Project.Develop.Runtime.Configs;
+using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Features.Score;
+using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Runtime.Meta.Service;
 using _Project.Develop.Runtime.UI;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.MainMenu;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
+using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Meta.Infrastructure
@@ -15,6 +20,19 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             container.RegisterAsSingle(CreateMainMenuPresenterFactory);
             container.RegisterAsSingle(CreateMainMenuScreenPresenter).NonLazy();
             container.RegisterAsSingle(CreateMainMenuPopupService);
+            container.RegisterAsSingle(CreateResetScoresService);
+        }
+
+        private static ResetScoresService CreateResetScoresService(DIContainer c)
+        {
+            ConfigsProviderService configsProviderService = c.Resolve<ConfigsProviderService>();
+            GameModesConfig gameModesConfig = configsProviderService.GetConfig<GameModesConfig>();
+            
+            return new ResetScoresService(
+                c.Resolve<WalletService>(),
+                c.Resolve<ScoreService>(),
+                gameModesConfig
+            );
         }
 
         private static MainMenuPopupService CreateMainMenuPopupService(DIContainer c)

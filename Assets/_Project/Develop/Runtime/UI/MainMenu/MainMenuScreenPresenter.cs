@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using _Project.Develop.Runtime.Meta.Service;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.Score;
 using _Project.Develop.Runtime.UI.Wallet;
+using _Project.Develop.Runtime.Utilities.DataManagement;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
 {
@@ -12,22 +14,26 @@ namespace _Project.Develop.Runtime.UI.MainMenu
         private readonly ProjectPresentersFactory _projectPresentersFactory;
         
         private readonly MainMenuPopupService _popupService;
+        private readonly ResetScoresService _resetScoresService;
+        private readonly AutosaveService _autosaveService;
         
         private readonly List<IPresenter> _childPresenters = new();
 
         public MainMenuScreenPresenter(
             MainMenuScreenView screen,
             ProjectPresentersFactory projectPresentersFactory,
-            MainMenuPopupService popupService
-        ) {
+            MainMenuPopupService popupService, ResetScoresService resetScoresService, AutosaveService autosaveService) {
             _screen = screen;
             _projectPresentersFactory = projectPresentersFactory;
             _popupService = popupService;
+            _resetScoresService = resetScoresService;
+            _autosaveService = autosaveService;
         }
 
         public void Initialize()
         {
             _screen.OpenLevelsMenuButtonClicked += OpenLevelsMenuButtonClicked;
+            _screen.ResetScoresButtonClicked += ResetScoresButtonClicked;
             
             CreateWallet();
             CreateScoreList();
@@ -39,6 +45,7 @@ namespace _Project.Develop.Runtime.UI.MainMenu
         public void Dispose()
         {
             _screen.OpenLevelsMenuButtonClicked -= OpenLevelsMenuButtonClicked;
+            _screen.ResetScoresButtonClicked -= ResetScoresButtonClicked;
             
             foreach (IPresenter presenter in _childPresenters)
                 presenter.Dispose();
@@ -51,6 +58,12 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             _popupService.OpenLevelsMenuPopup();
         }
 
+        private void ResetScoresButtonClicked()
+        {
+            _resetScoresService.ResetScore();
+            _autosaveService.Run();
+        }
+        
         private void CreateWallet()
         {
             WalletPresenter walletPresenter = _projectPresentersFactory.CreateWalletPresenter(_screen.WalletView);

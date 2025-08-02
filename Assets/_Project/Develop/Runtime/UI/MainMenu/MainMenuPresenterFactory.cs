@@ -1,4 +1,6 @@
 ﻿using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Meta.Service;
+using _Project.Develop.Runtime.Utilities.DataManagement;
 
 namespace _Project.Develop.Runtime.UI.MainMenu
 {
@@ -16,7 +18,9 @@ namespace _Project.Develop.Runtime.UI.MainMenu
             return new MainMenuScreenPresenter(
                 view,
                 _container.Resolve<ProjectPresentersFactory>(),
-                _container.Resolve<MainMenuPopupService>()
+                _container.Resolve<MainMenuPopupService>(),
+                _container.Resolve<ResetScoresService>(),
+                _container.Resolve<AutosaveService>()
             );
         }
     }
