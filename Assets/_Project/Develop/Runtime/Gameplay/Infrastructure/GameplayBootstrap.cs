@@ -15,6 +15,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private GameplayInputArgs _inputArgs;
         
         private WalletService _walletService;
+        
+        [SerializeField] private TestGameplay _testGameplay;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -31,17 +33,21 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         public override IEnumerator Initialize()
         {
             Debug.Log($"Current level: {_inputArgs.LevelNumber}");
-            
-            _walletService = _container.Resolve<WalletService>();
-            
+
             Debug.Log("GameplayBootstrap initialized");
             
+            _walletService = _container.Resolve<WalletService>();
+
+            _testGameplay.Initialize(_container);
+
             yield break;
         }
 
         public override void Run()
         {
             Debug.Log("GameplayBootstrap running...");
+            
+            _testGameplay.Run();
         }
         
         private void Update()
