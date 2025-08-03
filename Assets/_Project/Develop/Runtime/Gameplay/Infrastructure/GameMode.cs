@@ -4,7 +4,6 @@ using _Project.Develop.Runtime.Gameplay.Controllers;
 using _Project.Develop.Runtime.Gameplay.Services;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
-using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
@@ -17,11 +16,11 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private readonly GameplayInputArgs _inputArgs;
         private UserInputValidationService _userInputValidationService;
         private UserInputController _userInputController;
+        private GameTaskService _gameTaskService;
+        private UserInputService _userInputService;
         
         private bool _isRunning;
         
-        private string _stringForType;
-
         public GameMode(DIContainer container, GameplayInputArgs inputArgs)
         {
             _container = container;
@@ -32,15 +31,15 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         {
             _isRunning = true;
 
-            _stringForType = GenerateString();
+            _gameTaskService = _container.Resolve<GameTaskService>();
+            _gameTaskService.SetTaskString(GenerateString());
             
-            _userInputValidationService = new UserInputValidationService(_stringForType);
-            
-            _userInputController = new UserInputController();
-            _userInputController.UserInput.Subscribe(OnUserInputUpdated);
-            
+            _userInputValidationService = new UserInputValidationService(_gameTaskService.TaskString);
 
-            Debug.Log($"Type this string: {_stringForType}");
+            _userInputService = _container.Resolve<UserInputService>();
+            _userInputService.InputString.Subscribe(OnUserInputUpdated);
+
+            _userInputController = new UserInputController(_userInputService);
         }
 
         private void OnUserInputUpdated(string oldInput, string newInput)
@@ -85,12 +84,12 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
         private bool WinConditionCompleted()
         {
-            return _userInputValidationService.IsEqual(_userInputController.UserInput.Value);
+            return _userInputValidationService.IsEqual(_userInputService.InputString.Value);
         }
 
         private bool DefeatConditionCompleted()
         {
-            return _userInputValidationService.IsValid(_userInputController.UserInput.Value) == false;
+            return _userInputValidationService.IsValid(_userInputService.InputString.Value) == false;
         }
         
         private string GenerateString()

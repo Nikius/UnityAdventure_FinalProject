@@ -52,7 +52,7 @@ namespace _Project.Develop.Runtime.Meta.Infrastructure
             return Object.Instantiate(menuUIRootPrefab);
         }
 
-        public static MainMenuPresenterFactory CreateMainMenuPresenterFactory(DIContainer c)
+        private static MainMenuPresenterFactory CreateMainMenuPresenterFactory(DIContainer c)
         {
             return new MainMenuPresenterFactory(c);
         }

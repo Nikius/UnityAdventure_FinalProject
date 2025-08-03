@@ -1,18 +1,21 @@
-﻿using _Project.Develop.Runtime.Utilities.Reactive;
+﻿using _Project.Develop.Runtime.Gameplay.Services;
 using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Controllers
 {
     public class UserInputController
     {
-        private readonly ReactiveVariable<string> _userInput = new();
-        
-        public IReadOnlyVariable<string> UserInput => _userInput;
-        
+        private readonly UserInputService _userInputService;
+
+        public UserInputController(UserInputService userInputService)
+        {
+            _userInputService = userInputService;
+        }
+
         public void Update()
         {
             if (!string.IsNullOrEmpty(Input.inputString))
-                _userInput.Value += Input.inputString;
+                _userInputService.AddToInputString(Input.inputString);
         }
     }
 }

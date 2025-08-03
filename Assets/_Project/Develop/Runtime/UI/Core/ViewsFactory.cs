@@ -19,6 +19,9 @@ namespace _Project.Develop.Runtime.UI.Core
             { ViewIDs.LevelsMenuPopup, "UI/LevelsMenuPopup/LevelsMenuPopup"},
             { ViewIDs.ScoreItemView, "UI/Score/ScoreItemView"},
             { ViewIDs.ScoreListView, "UI/Score/ScoreListView"},
+            { ViewIDs.TaskView, "UI/Gameplay/TaskView"},
+            { ViewIDs.UserInputView, "UI/Gameplay/UserInputView"},
+            { ViewIDs.GameplayScreen, "UI/Gameplay/GameplayScreenView"},
         };
 
         public ViewsFactory(ResourcesAssetsLoader resourcesAssetsLoader)

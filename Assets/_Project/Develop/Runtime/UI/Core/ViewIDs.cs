@@ -9,5 +9,8 @@
         public  const string LevelsMenuPopup = nameof(LevelsMenuPopup);
         public  const string ScoreItemView = nameof(ScoreItemView);
         public  const string ScoreListView = nameof(ScoreListView);
+        public  const string TaskView = nameof(TaskView);
+        public  const string UserInputView = nameof(UserInputView);
+        public  const string GameplayScreen = nameof(GameplayScreen);
     }
 }

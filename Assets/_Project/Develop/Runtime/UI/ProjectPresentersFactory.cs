@@ -6,6 +6,7 @@ using _Project.Develop.Runtime.Meta.Features.Wallet;
 using _Project.Develop.Runtime.UI.CommonViews;
 using _Project.Develop.Runtime.UI.Core;
 using _Project.Develop.Runtime.UI.Core.TestPopup;
+using _Project.Develop.Runtime.UI.Gameplay;
 using _Project.Develop.Runtime.UI.LevelsMenuPopup;
 using _Project.Develop.Runtime.UI.Score;
 using _Project.Develop.Runtime.UI.Wallet;
@@ -94,6 +95,13 @@ namespace _Project.Develop.Runtime.UI
                 _container.Resolve<ViewsFactory>(),
                 view
             );
+        }
+        
+        public TextWithLabelPresenter CreateTextWithLabelPresenter(
+            TextWithLabelView view,
+            IReadOnlyVariable<string> text
+        ) {
+            return new TextWithLabelPresenter(text, view);
         }
     }
 }
