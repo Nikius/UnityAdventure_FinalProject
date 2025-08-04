@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
@@ -17,6 +18,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         private WalletService _walletService;
         
         [SerializeField] private TestGameplay _testGameplay;
+        private EntitiesLifeContext _entitiesLifeContext;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -37,6 +39,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             Debug.Log("GameplayBootstrap initialized");
             
             _walletService = _container.Resolve<WalletService>();
+            
+            _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
 
             _testGameplay.Initialize(_container);
 
@@ -52,6 +56,8 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         
         private void Update()
         {
+            _entitiesLifeContext?.Update(Time.deltaTime);
+            
             if (Input.GetKeyDown(KeyCode.F))
             {
                 SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();

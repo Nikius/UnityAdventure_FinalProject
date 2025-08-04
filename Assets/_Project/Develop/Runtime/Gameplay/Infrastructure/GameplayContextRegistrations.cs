@@ -1,5 +1,7 @@
-﻿using _Project.Develop.Runtime.Infrastructure.DI;
-using UnityEngine;
+﻿using _Project.Develop.Runtime.Gameplay.EntitiesCore;
+using _Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
+using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.Utilities.AssetsManagement;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
@@ -7,7 +9,27 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
     {
         public static void Process(DIContainer container, GameplayInputArgs args)
         {
-            Debug.Log("Process registration services on Gameplay scene");
+            container.RegisterAsSingle(CreateEntitiesFactory);
+            container.RegisterAsSingle(CreateEntitiesLifeContext);
+            container.RegisterAsSingle(CreateMonoEntitiesFactory).NonLazy();
+        }
+
+        private static MonoEntitiesFactory CreateMonoEntitiesFactory(DIContainer c)
+        {
+            return new MonoEntitiesFactory(
+                c.Resolve<ResourcesAssetsLoader>(),
+                c.Resolve<EntitiesLifeContext>()
+            );
+        }
+
+        private static EntitiesLifeContext CreateEntitiesLifeContext(DIContainer c)
+        {
+            return new EntitiesLifeContext();
+        }
+
+        private static EntitiesFactory CreateEntitiesFactory(DIContainer c)
+        {
+            return new EntitiesFactory(c);
         }
     }
 }
