@@ -1,48 +1,88 @@
-using System;
-using _Project.Develop.Runtime.Gameplay.EntitiesCore.Common;
-using _Project.Develop.Runtime.Gameplay.Features.MovementFeature;
-using _Project.Develop.Runtime.Utilities.Reactive;
-using UnityEngine;
-
 namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 {
 	public partial class Entity
 	{
-		public MoveDirection MoveDirectionC => GetComponent<MoveDirection>();
+		public _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationDirection RotationDirectionC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationDirection>();
 
-		public ReactiveVariable<Vector3> MoveDirection => MoveDirectionC.Value;
+		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3> RotationDirection => RotationDirectionC.Value;
 
-		public Entity AddMoveDirection()
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddRotationDirection()
 		{
-			return AddComponent(new MoveDirection() { Value = new ReactiveVariable<Vector3>() }); 
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationDirection() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3>() }); 
 		}
 
-		public Entity AddMoveDirection(ReactiveVariable<Vector3> value)
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddRotationDirection(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3> value)
 		{
-			return AddComponent(new MoveDirection() {Value = value}); 
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationDirection() {Value = value}); 
 		}
 
-		public MoveSpeed MoveSpeedC => GetComponent<MoveSpeed>();
+		public _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationSpeed RotationSpeedC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationSpeed>();
 
-		public ReactiveVariable<Single> MoveSpeed => MoveSpeedC.Value;
+		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> RotationSpeed => RotationSpeedC.Value;
 
-		public Entity AddMoveSpeed()
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddRotationSpeed()
 		{
-			return AddComponent(new MoveSpeed() { Value = new ReactiveVariable<Single>() }); 
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationSpeed() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single>() }); 
 		}
 
-		public Entity AddMoveSpeed(ReactiveVariable<Single> value)
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddRotationSpeed(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> value)
 		{
-			return AddComponent(new MoveSpeed() {Value = value}); 
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.RotationFeature.RotationSpeed() {Value = value}); 
 		}
 
-		public RigidbodyComponent RigidbodyC => GetComponent<RigidbodyComponent>();
+		public _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveDirection MoveDirectionC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveDirection>();
 
-		public Rigidbody Rigidbody => RigidbodyC.Value;
+		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3> MoveDirection => MoveDirectionC.Value;
 
-		public Entity AddRigidbody(Rigidbody value)
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddMoveDirection()
 		{
-			return AddComponent(new RigidbodyComponent() {Value = value}); 
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveDirection() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3>() }); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddMoveDirection(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<UnityEngine.Vector3> value)
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveDirection() {Value = value}); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveSpeed MoveSpeedC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveSpeed>();
+
+		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> MoveSpeed => MoveSpeedC.Value;
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddMoveSpeed()
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveSpeed() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single>() }); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddMoveSpeed(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> value)
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.MovementFeature.MoveSpeed() {Value = value}); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.RigidbodyComponent RigidbodyC => GetComponent<_Project.Develop.Runtime.Gameplay.EntitiesCore.Common.RigidbodyComponent>();
+
+		public UnityEngine.Rigidbody Rigidbody => RigidbodyC.Value;
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddRigidbody(UnityEngine.Rigidbody value)
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.RigidbodyComponent() {Value = value}); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.CharacterControllerComponent CharacterControllerC => GetComponent<_Project.Develop.Runtime.Gameplay.EntitiesCore.Common.CharacterControllerComponent>();
+
+		public UnityEngine.CharacterController CharacterController => CharacterControllerC.Value;
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddCharacterController(UnityEngine.CharacterController value)
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.CharacterControllerComponent() {Value = value}); 
+		}
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.TransformComponent TransformC => GetComponent<_Project.Develop.Runtime.Gameplay.EntitiesCore.Common.TransformComponent>();
+
+		public UnityEngine.Transform Transform => TransformC.Value;
+
+		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTransform(UnityEngine.Transform value)
+		{
+			return AddComponent(new _Project.Develop.Runtime.Gameplay.EntitiesCore.Common.TransformComponent() {Value = value}); 
 		}
 
 	}

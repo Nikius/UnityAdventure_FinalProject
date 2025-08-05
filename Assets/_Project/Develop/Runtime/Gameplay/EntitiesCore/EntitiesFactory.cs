@@ -1,5 +1,6 @@
 ﻿using _Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using _Project.Develop.Runtime.Gameplay.Features.MovementFeature;
+using _Project.Develop.Runtime.Gameplay.Features.RotationFeature;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.Reactive;
 using UnityEngine;
@@ -20,16 +21,38 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntitiesFactory = _container.Resolve<MonoEntitiesFactory>();
         }
 
-        public Entity CreateTestEntity(Vector3 position)
+        public Entity CreateRigidbodyEntity(Vector3 position)
         {
             Entity entity = CreateEmpty();
 
-            _monoEntitiesFactory.Create(entity, position, "Entities/TestEntity");
+            _monoEntitiesFactory.Create(entity, position, "Entities/RigidbodyEntity");
 
             entity.AddMoveDirection()
-                .AddMoveSpeed(new ReactiveVariable<float>(10));
+                .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddRotationDirection(entity.MoveDirection)
+                .AddRotationSpeed(new ReactiveVariable<float>(1000));
 
-            entity.AddSystem(new MovementSystem());
+            entity.AddSystem(new RigidbodyMovementSystem());
+            entity.AddSystem(new RigidbodyRotationSystem());
+            
+            _entitiesLifeContext.Add(entity);
+            
+            return entity;
+        }
+        
+        public Entity CreateCharacterControllerEntity(Vector3 position)
+        {
+            Entity entity = CreateEmpty();
+
+            _monoEntitiesFactory.Create(entity, position, "Entities/CharacterControllerEntity");
+
+            entity.AddMoveDirection()
+                .AddMoveSpeed(new ReactiveVariable<float>(10))
+                .AddRotationDirection(entity.MoveDirection)
+                .AddRotationSpeed(new ReactiveVariable<float>(1000));
+
+            entity.AddSystem(new CharacterControllerMovementSystem());
+            entity.AddSystem(new TransformRotationSystem());
             
             _entitiesLifeContext.Add(entity);
             

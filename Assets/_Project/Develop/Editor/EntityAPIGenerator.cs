@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -19,7 +20,7 @@ namespace _Project.Develop.Editor
             => Path.Combine(Application.dataPath,
                 "_Project/Develop/Runtime/Gameplay/EntitiesCore/Generated/EntityAPI.cs");
         
-        [InitializeOnLoadMethod]
+        [DidReloadScripts]
         [MenuItem("Tools/Generate Entity API")]
         private static void Generate()
         {

@@ -9,7 +9,9 @@ namespace _Project.Develop.Runtime.Gameplay
         private DIContainer _container;
         private EntitiesFactory _entitiesFactory;
 
-        private Entity _entity;
+        private Entity _currentEntity;
+        private Entity _rigidbodyEntity;
+        private Entity _characterControllerEntity;
 
         private bool _isRunning;
 
@@ -21,8 +23,10 @@ namespace _Project.Develop.Runtime.Gameplay
 
         public void Run()
         {
-            _entity = _entitiesFactory.CreateTestEntity(Vector3.zero);
-            
+            _rigidbodyEntity = _entitiesFactory.CreateRigidbodyEntity(new Vector3(1, 0, 0));
+            _characterControllerEntity = _entitiesFactory.CreateCharacterControllerEntity(new Vector3(-1, 0, 0));
+            _currentEntity = _rigidbodyEntity;
+
             _isRunning = true;
         }
 
@@ -30,10 +34,22 @@ namespace _Project.Develop.Runtime.Gameplay
         {
             if (_isRunning == false) 
                 return;
+
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                _currentEntity = _rigidbodyEntity;
+                Debug.Log("Activated RigidBody Entity");
+            }
+            
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                _currentEntity = _characterControllerEntity;
+                Debug.Log("Activated CharacterController Entity");
+            }
             
             Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             
-            _entity.MoveDirection.Value = input;
+            _currentEntity.MoveDirection.Value = input;
         }
     }
 }
