@@ -23,8 +23,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features.MovementFeature
             
             _canRotate = entity.CanRotate;
             
-            // if (_direction.Value != Vector3.zero)
-            //     _rigidbody.transform.rotation = Quaternion.LookRotation(_direction.Value.normalized);
+            if (_direction.Value != Vector3.zero)
+                _rigidbody.transform.rotation = Quaternion.LookRotation(_direction.Value.normalized);
         }
 
         public void OnUpdate(float deltaTime)

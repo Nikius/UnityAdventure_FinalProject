@@ -53,8 +53,6 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Sensors
 
                 _contacts.Count--;
             }
-            
-            Debug.Log("Contacts count: " + _contacts.Count);
         }
     }
 }
