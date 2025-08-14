@@ -9,17 +9,19 @@ namespace _Project.Develop.Runtime.Gameplay.Features.ApplyDamage
 {
     public class ApplyDamageSystem : IInitializableSystem, IDisposableSystem
     {
+        private string _id;
         private ReactiveEvent<float> _damageRequest;
         private ReactiveEvent<float> _damageEvent;
 
         private ReactiveVariable<float> _health;
 
         private ICompositeCondition _canApplyDamage;
-        
+
         private IDisposable _requestDisposable;
-        
+
         public void OnInit(Entity entity)
         {
+            _id = entity.ID;
             _damageRequest = entity.TakeDamageRequest;
             _damageEvent = entity.TakeDamageEvent;
             _health = entity.CurrentHealth;
@@ -38,7 +40,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features.ApplyDamage
             
             _health.Value = Mathf.Max(_health.Value - damage, 0);
             _damageEvent.Invoke(damage);
-            Debug.Log("I took damage!");
+            
+            Debug.Log($"{_id} took damage! HP left: " + _health.Value);
         }
 
         public void OnDispose()
