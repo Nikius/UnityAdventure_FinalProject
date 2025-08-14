@@ -11,4 +11,9 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore.Common
     {
         public Transform Value;
     }
+
+    public class IDComponent : IEntityComponent
+    {
+        public string Value;
+    }
 }

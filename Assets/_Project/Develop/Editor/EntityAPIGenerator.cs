@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -19,32 +20,50 @@ namespace _Project.Develop.Editor
             => Path.Combine(Application.dataPath,
                 "_Project/Develop/Runtime/Gameplay/EntitiesCore/Generated/EntityAPI.cs");
         
-        [InitializeOnLoadMethod]
+        [DidReloadScripts]
         [MenuItem("Tools/Generate Entity API")]
         private static void Generate()
         {
+            Assembly assembly = Assembly.Load(AssemblyName);
+
+            List<Type> componentTypes = GetComponentTypesFrom(assembly).ToList();
+            
+            var usings = new HashSet<string>
+            {
+                "System",
+                "UnityEngine",
+                typeof(Entity).Namespace
+            };
+            
+            foreach (Type componentType in componentTypes)
+            {
+                usings.Add(componentType.Namespace);
+                if(HasSingleField(componentType, out FieldInfo field) && field.Name == "Value")
+                    usings.Add(field.FieldType.Namespace);
+            }
+            
             StringBuilder sb = new StringBuilder();
+            
+            foreach (string usingString in usings.OrderBy(u => u))
+                sb.AppendLine($"using {usingString};");
+            
+            sb.AppendLine("");
             
             sb.AppendLine($"namespace {typeof(Entity).Namespace}");
             sb.AppendLine("{");
-            
-            sb.AppendLine($"\tpublic partial class {typeof(Entity).Name}");
+
+            sb.AppendLine($"\tpublic partial class {nameof(Entity)}");
             sb.AppendLine("\t{");
-
-            Assembly assembly = Assembly.Load(AssemblyName);
-
-            IEnumerable<Type> componentTypes = GetComponentTypesFrom(assembly);
 
             foreach (Type componentType in componentTypes)
             {
                 string typeName = componentType.Name;
-                string fullTypeName = componentType.FullName;
 
                 string componentName = RemoveSuffixIsExists(typeName, "Component");
                 string modifiedComponentName = componentName + "C";
 
                 // Свойство для получения компонента
-                sb.AppendLine($"\t\tpublic {fullTypeName} {modifiedComponentName} => GetComponent<{fullTypeName}>();");
+                sb.AppendLine($"\t\tpublic {typeName} {modifiedComponentName} => GetComponent<{typeName}>();");
                 sb.AppendLine();
 
                 if(HasSingleField(componentType, out FieldInfo field) && field.Name == "Value")
@@ -70,20 +89,20 @@ namespace _Project.Develop.Editor
                     {
                         string initializer = "{ " + field.Name + " = new " + GetValidTypeName(field.FieldType) + "() }";
 
-                        sb.AppendLine($"\t\tpublic {typeof(Entity).FullName} Add{componentName}()");
+                        sb.AppendLine($"\t\tpublic {nameof(Entity)} Add{componentName}()");
                         sb.AppendLine("\t\t{");
-                        sb.AppendLine($"\t\t\treturn AddComponent(new {fullTypeName}() {initializer}); ");
+                        sb.AppendLine($"\t\t\treturn AddComponent(new {typeName}() {initializer}); ");
                         sb.AppendLine("\t\t}");
                         sb.AppendLine();
                     }
                 }
 
-                //метод add с указание параметров
+                //метод add с указанием параметров
                 string componentParametrs = GetParametrs(componentType);
 
-                sb.AppendLine($"\t\tpublic {typeof(Entity).FullName} Add{componentName}({componentParametrs})");
+                sb.AppendLine($"\t\tpublic {nameof(Entity)} Add{componentName}({componentParametrs})");
                 sb.AppendLine("\t\t{");
-                sb.AppendLine($"\t\t\treturn AddComponent(new {fullTypeName}() {GetInitializer(componentType)}); ");
+                sb.AppendLine($"\t\t\treturn AddComponent(new {typeName}() {GetInitializer(componentType)}); ");
                 sb.AppendLine("\t\t}");
                 sb.AppendLine();
             }
@@ -131,7 +150,7 @@ namespace _Project.Develop.Editor
             return "{" + string.Join(", ", initializers) + "}";
         }
 
-        public static string GetVariableNameFrom(string name) => char.ToLowerInvariant(name[0]) + name.Substring(1);
+        private static string GetVariableNameFrom(string name) => char.ToLowerInvariant(name[0]) + name.Substring(1);
 
         private static bool HasSingleField(Type type, out FieldInfo field)
         {
@@ -166,13 +185,13 @@ namespace _Project.Develop.Editor
                     && typeof(IEntityComponent).IsAssignableFrom(type));
         }
 
-        public static string GetValidTypeName(Type type)
+        private static string GetValidTypeName(Type type)
         {
             if (type.IsGenericType)
             {
                 StringBuilder sb = new StringBuilder();
 
-                string fullTypeName = type.FullName;
+                string fullTypeName = type.Name;
                 var backtickIndex = fullTypeName.IndexOf('`');
 
                 if (backtickIndex >= 0)
@@ -196,7 +215,7 @@ namespace _Project.Develop.Editor
             }
             else
             {
-                return type.FullName;
+                return type.Name;
             }
         }
     }
