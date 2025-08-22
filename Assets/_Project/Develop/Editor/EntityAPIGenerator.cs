@@ -58,6 +58,7 @@ namespace _Project.Develop.Editor
             foreach (Type componentType in componentTypes)
             {
                 string typeName = componentType.Name;
+                string fullTypeName = componentType.FullName;
 
                 string componentName = RemoveSuffixIsExists(typeName, "Component");
                 string modifiedComponentName = componentName + "C";
@@ -75,7 +76,7 @@ namespace _Project.Develop.Editor
                     //метод TryGet 
                     sb.AppendLine($"\t\tpublic bool TryGet{componentName}(out {GetValidTypeName(field.FieldType)} {GetVariableNameFrom(field.Name)})");
                     sb.AppendLine("\t\t{");
-                    sb.AppendLine($"\t\t\tbool result = TryGetComponent(out {fullTypeName} component);");
+                    sb.AppendLine($"\t\t\tbool result = TryGetComponent(out {typeName} component);");
                     sb.AppendLine($"\t\t\tif(result)");
                     sb.AppendLine($"\t\t\t\t{GetVariableNameFrom(field.Name)} = component.{field.Name};");
                     sb.AppendLine($"\t\t\telse");
