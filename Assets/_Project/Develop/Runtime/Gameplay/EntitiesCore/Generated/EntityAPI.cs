@@ -305,6 +305,78 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new TeleportDelayEndEvent() {Value = value}); 
 		}
 
+		public TeleportCooldownInitialTime TeleportCooldownInitialTimeC => GetComponent<TeleportCooldownInitialTime>();
+
+		public ReactiveVariable<Single> TeleportCooldownInitialTime => TeleportCooldownInitialTimeC.Value;
+
+		public bool TryGetTeleportCooldownInitialTime(out ReactiveVariable<Single> value)
+		{
+			bool result = TryGetComponent(out TeleportCooldownInitialTime component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(ReactiveVariable<Single>);
+			return result;
+		}
+
+		public Entity AddTeleportCooldownInitialTime()
+		{
+			return AddComponent(new TeleportCooldownInitialTime() { Value = new ReactiveVariable<Single>() }); 
+		}
+
+		public Entity AddTeleportCooldownInitialTime(ReactiveVariable<Single> value)
+		{
+			return AddComponent(new TeleportCooldownInitialTime() {Value = value}); 
+		}
+
+		public TeleportCooldownCurrentTime TeleportCooldownCurrentTimeC => GetComponent<TeleportCooldownCurrentTime>();
+
+		public ReactiveVariable<Single> TeleportCooldownCurrentTime => TeleportCooldownCurrentTimeC.Value;
+
+		public bool TryGetTeleportCooldownCurrentTime(out ReactiveVariable<Single> value)
+		{
+			bool result = TryGetComponent(out TeleportCooldownCurrentTime component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(ReactiveVariable<Single>);
+			return result;
+		}
+
+		public Entity AddTeleportCooldownCurrentTime()
+		{
+			return AddComponent(new TeleportCooldownCurrentTime() { Value = new ReactiveVariable<Single>() }); 
+		}
+
+		public Entity AddTeleportCooldownCurrentTime(ReactiveVariable<Single> value)
+		{
+			return AddComponent(new TeleportCooldownCurrentTime() {Value = value}); 
+		}
+
+		public InTeleportCooldown InTeleportCooldownC => GetComponent<InTeleportCooldown>();
+
+		public ReactiveVariable<Boolean> InTeleportCooldown => InTeleportCooldownC.Value;
+
+		public bool TryGetInTeleportCooldown(out ReactiveVariable<Boolean> value)
+		{
+			bool result = TryGetComponent(out InTeleportCooldown component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(ReactiveVariable<Boolean>);
+			return result;
+		}
+
+		public Entity AddInTeleportCooldown()
+		{
+			return AddComponent(new InTeleportCooldown() { Value = new ReactiveVariable<Boolean>() }); 
+		}
+
+		public Entity AddInTeleportCooldown(ReactiveVariable<Boolean> value)
+		{
+			return AddComponent(new InTeleportCooldown() {Value = value}); 
+		}
+
 		public BodyCollider BodyColliderC => GetComponent<BodyCollider>();
 
 		public CapsuleCollider BodyCollider => BodyColliderC.Value;
@@ -1486,30 +1558,6 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 		public Entity AddCurrentTarget(ReactiveVariable<Entity> value)
 		{
 			return AddComponent(new CurrentTarget() {Value = value}); 
-		}
-
-		public RandomTargetRadius RandomTargetRadiusC => GetComponent<RandomTargetRadius>();
-
-		public ReactiveVariable<Single> RandomTargetRadius => RandomTargetRadiusC.Value;
-
-		public bool TryGetRandomTargetRadius(out ReactiveVariable<Single> value)
-		{
-			bool result = TryGetComponent(out RandomTargetRadius component);
-			if(result)
-				value = component.Value;
-			else
-				value = default(ReactiveVariable<Single>);
-			return result;
-		}
-
-		public Entity AddRandomTargetRadius()
-		{
-			return AddComponent(new RandomTargetRadius() { Value = new ReactiveVariable<Single>() }); 
-		}
-
-		public Entity AddRandomTargetRadius(ReactiveVariable<Single> value)
-		{
-			return AddComponent(new RandomTargetRadius() {Value = value}); 
 		}
 
 		public MustGenerateRandomTargetEvent MustGenerateRandomTargetEventC => GetComponent<MustGenerateRandomTargetEvent>();

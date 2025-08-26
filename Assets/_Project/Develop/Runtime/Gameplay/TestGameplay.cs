@@ -32,7 +32,9 @@ namespace _Project.Develop.Runtime.Gameplay
             _brainsFactory.CreateMainHeroBrain(_entity, new NearestDamageableTargetSelector(_entity));
             
             _ghost = _entitiesFactory.CreateGhost(Vector3.zero + Vector3.forward * 5);
-            _teleporter = _entitiesFactory.CreateTeleporter(Vector3.zero + Vector3.back * 5);
+            
+            _teleporter = _entitiesFactory.CreateTeleporter(Vector3.zero + Vector3.back * 8);
+            _brainsFactory.CreateTeleporterBrain(_teleporter, new LowestHealthInRadiusTargetSelector(_teleporter, _teleporter.TeleportRadius.Value));
             
             _isRunning = true;
         }
@@ -47,12 +49,6 @@ namespace _Project.Develop.Runtime.Gameplay
             
             if (Input.GetKeyDown(KeyCode.R))
                 _entity.StartAttackRequest.Invoke();
-
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                _teleporter.MustGenerateRandomTargetEvent.Invoke(_teleporter.TeleportTarget);
-                _teleporter.StartTeleportRequest.Invoke();
-            }
 
             if (Input.GetKeyDown(KeyCode.I))
                 _brainsFactory.CreateGhostBrain(_ghost);

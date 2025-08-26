@@ -16,7 +16,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.AI.RandomTarget
         
         public void OnInit(Entity entity)
         {
-            _radius = entity.RandomTargetRadius;
+            _radius = entity.TeleportRadius;
             _mustGenerateEvent = entity.MustGenerateRandomTargetEvent;
 
             _mustGenerateEventDisposable = _mustGenerateEvent.Subscribe(OnMustGenerateEvent);
@@ -24,7 +24,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.AI.RandomTarget
 
         private void OnMustGenerateEvent(ReactiveVariable<Vector3> position)
         {
-            position.Value = new Vector3(
+            position.Value += new Vector3(
                 Random.Range(-_radius.Value, _radius.Value),
                 0,
                 Random.Range(-_radius.Value, _radius.Value)

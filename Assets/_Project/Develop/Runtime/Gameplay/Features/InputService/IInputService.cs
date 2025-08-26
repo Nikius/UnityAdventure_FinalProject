@@ -6,5 +6,8 @@ namespace _Project.Develop.Runtime.Gameplay.Features.InputService
     {
         bool IsEnabled { get; set; }
         Vector3 Direction { get; }
+        public Vector3 LookDirection { get; }
+
+        public bool IsAttackButtonDown();
     }
 }
