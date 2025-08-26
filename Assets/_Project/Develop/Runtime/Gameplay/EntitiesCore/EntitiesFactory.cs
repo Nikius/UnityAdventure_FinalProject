@@ -276,18 +276,20 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddInEnergyRechargeCooldown()
                 .AddEnergyRechargeCooldownEndEvent()
                 
-                .AddRandomTargetRadius(new ReactiveVariable<float>(5))
                 .AddMustGenerateRandomTargetEvent()
                 
-                .AddTeleportRadius(new ReactiveVariable<float>(5)) 
+                .AddTeleportRadius(new ReactiveVariable<float>(5f)) 
                 .AddTeleportTarget(new ReactiveVariable<Vector3>(position))
-                .AddTeleportEnergyCost(new ReactiveVariable<float>(50))
-                .AddTeleportProcessInitialTime(new ReactiveVariable<float>(2))
+                .AddTeleportEnergyCost(new ReactiveVariable<float>(20))
+                .AddTeleportProcessInitialTime(new ReactiveVariable<float>(0.5f))
                 .AddTeleportProcessCurrentTime()
                 .AddInTeleportProcess()
                 .AddStartTeleportRequest()
                 .AddStartTeleportEvent()
                 .AddEndTeleportEvent()
+                .AddTeleportCooldownInitialTime(new ReactiveVariable<float>(1f))
+                .AddTeleportCooldownCurrentTime()
+                .AddInTeleportCooldown()
                 
                 .AddTakeDamageRequest()
                 .AddTakeDamageEvent()
@@ -297,8 +299,8 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddStartAttackRequest()
                 .AddStartAttackEvent()
                 .AddEndAttackEvent()
-                .AddBlowRadius(new ReactiveVariable<float>(10f))
-                .AddBlowDamage(new ReactiveVariable<float>(60f))
+                .AddBlowRadius(new ReactiveVariable<float>(2f))
+                .AddBlowDamage(new ReactiveVariable<float>(10f))
                 
                 .AddContactsDetectingMask(1 << LayerMask.NameToLayer("Characters"))
                 .AddContactCollidersBuffer(new Buffer<Collider>(64))
@@ -308,7 +310,7 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .Add(new FuncCondition(() => entity.IsDead.Value == false))
                 .Add(new FuncCondition(() => entity.InTeleportProcess.Value == false))
                 .Add(new FuncCondition(() => entity.CurrentEnergy.Value >= entity.TeleportEnergyCost.Value))
-                .Add(new FuncCondition(() => entity.Transform.position != entity.TeleportTarget.Value));
+                .Add(new FuncCondition(() => entity.InTeleportCooldown.Value == false));
 
             ICompositeCondition mustDie = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
@@ -351,6 +353,7 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new StartTeleportSystem())
                 .AddSystem(new TeleportProcessTimerSystem())
                 .AddSystem(new EndTeleportSystem())
+                .AddSystem(new TeleportCooldownTimerSystem())
                 
                 .AddSystem(new ApplyDamageSystem())
                 .AddSystem(new DeathSystem())

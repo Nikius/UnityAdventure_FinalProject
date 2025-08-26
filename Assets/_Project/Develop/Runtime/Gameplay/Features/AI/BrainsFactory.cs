@@ -30,35 +30,30 @@ namespace _Project.Develop.Runtime.Gameplay.Features.AI
         
         public StateMachineBrain CreateMainHeroBrain(Entity entity, ITargetSelector targetSelector)
         {
-            AIStateMachine combatState = CreateAutoAttackStateMachine(entity);
+            AttackTriggerState attackTriggerState = new AttackTriggerState(entity);
+
+            ICondition canAttack = entity.CanStartAttack;
 
             PlayerInputMovementState movementState = new PlayerInputMovementState(entity, _inputService);
 
-            ReactiveVariable<Entity> currentTarget = entity.CurrentTarget;
-
-            ICompositeCondition fromMovementToCombatStateCondition = new CompositeCondition()
-                .Add(new FuncCondition(() => currentTarget.Value != null))
+            ICompositeCondition fromMovementToAttackTriggerStateCondition = new CompositeCondition()
+                .Add(canAttack)
+                .Add(new FuncCondition(() => _inputService.IsAttackButtonDown()))
                 .Add(new FuncCondition(() => _inputService.Direction == Vector3.zero));
 
-            ICompositeCondition fromCombatToMovementStateCondition = new CompositeCondition(LogicOperations.Or)
-                .Add(new FuncCondition(() => currentTarget.Value == null))
+            ICompositeCondition fromAttackTriggerToMovementStateCondition = new CompositeCondition(LogicOperations.Or)
+                .Add(new FuncCondition(() => canAttack.Evaluate() == false))
                 .Add(new FuncCondition(() => _inputService.Direction != Vector3.zero));
 
             AIStateMachine behaviour = new AIStateMachine();
 
             behaviour.AddState(movementState);
-            behaviour.AddState(combatState);
+            behaviour.AddState(attackTriggerState);
 
-            behaviour.AddTransition(movementState, combatState, fromMovementToCombatStateCondition);
-            behaviour.AddTransition(combatState, movementState, fromCombatToMovementStateCondition);
+            behaviour.AddTransition(movementState, attackTriggerState, fromMovementToAttackTriggerStateCondition);
+            behaviour.AddTransition(attackTriggerState, movementState, fromAttackTriggerToMovementStateCondition);
 
-            FindTargetState findTargetState = new FindTargetState(targetSelector, _entitiesLifeContext, entity);
-            AIParallelState parallelState = new AIParallelState(findTargetState, behaviour);
-
-            AIStateMachine rootStateMachine = new AIStateMachine();
-            rootStateMachine.AddState(parallelState);
-
-            StateMachineBrain brain = new StateMachineBrain(rootStateMachine);
+            StateMachineBrain brain = new StateMachineBrain(behaviour);
             _brainsContext.SetFor(entity, brain);
 
             return brain;
@@ -68,6 +63,38 @@ namespace _Project.Develop.Runtime.Gameplay.Features.AI
         public StateMachineBrain CreateGhostBrain(Entity entity)
         {
             AIStateMachine stateMachine = CreateRandomMovementStateMachine(entity);
+            StateMachineBrain brain = new StateMachineBrain(stateMachine);
+            
+            _brainsContext.SetFor(entity, brain);
+            
+            return brain;
+        }
+        
+        public StateMachineBrain CreateTeleporterBrain(Entity entity, ITargetSelector targetSelector)
+        {
+            EmptyState emptyState = new EmptyState();
+            
+            TeleportationState teleportationState = new TeleportationState(
+                entity,
+                targetSelector,
+                _entitiesLifeContext
+            );
+
+            ICompositeCondition fromEmptyToTeleportationStateCondition = entity.CanStartTeleport;
+            fromEmptyToTeleportationStateCondition.Add(
+                new FuncCondition(() => entity.CurrentEnergy.Value >= entity.MaxEnergy.Value * 0.4)
+            );
+            
+            FuncCondition fromTeleportationToEmptyStateCondition = new FuncCondition(() => entity.InTeleportProcess.Value = true);
+
+            AIStateMachine stateMachine = new AIStateMachine();
+            
+            stateMachine.AddState(emptyState);
+            stateMachine.AddState(teleportationState);
+            
+            stateMachine.AddTransition(emptyState, teleportationState, fromEmptyToTeleportationStateCondition);
+            stateMachine.AddTransition(teleportationState, emptyState, fromTeleportationToEmptyStateCondition);
+            
             StateMachineBrain brain = new StateMachineBrain(stateMachine);
             
             _brainsContext.SetFor(entity, brain);

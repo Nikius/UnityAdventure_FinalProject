@@ -64,4 +64,19 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Teleport
     {
         public ReactiveEvent Value;
     }
+    
+    public class TeleportCooldownInitialTime : IEntityComponent
+    {
+        public ReactiveVariable<float> Value;
+    }
+
+    public class TeleportCooldownCurrentTime : IEntityComponent
+    {
+        public ReactiveVariable<float> Value;
+    }
+
+    public class InTeleportCooldown : IEntityComponent
+    {
+        public ReactiveVariable<bool> Value;
+    }
 }
