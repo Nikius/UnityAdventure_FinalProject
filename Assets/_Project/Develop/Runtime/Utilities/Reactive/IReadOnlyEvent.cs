@@ -7,7 +7,7 @@ namespace _Project.Develop.Runtime.Utilities.Reactive
         IDisposable Subscribe(Action action);
     }
     
-    public interface IReadonlyEvent<T>
+    public interface IReadOnlyEvent<T>
     {
         IDisposable Subscribe(Action<T> action);
     }

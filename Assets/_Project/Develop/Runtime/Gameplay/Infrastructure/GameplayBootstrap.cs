@@ -2,6 +2,8 @@
 using System.Collections;
 using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using _Project.Develop.Runtime.Gameplay.Features.AI;
+using _Project.Develop.Runtime.Gameplay.Features.MainHero;
+using _Project.Develop.Runtime.Gameplay.States;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
@@ -18,7 +20,7 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         
         private WalletService _walletService;
         
-        [SerializeField] private TestGameplay _testGameplay;
+        private GameplayStatesContext _gameplayStatesContext;
         private EntitiesLifeContext _entitiesLifeContext;
         private AIBrainsContext _brainsContext;
 
@@ -45,7 +47,9 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
             _brainsContext = _container.Resolve<AIBrainsContext>();
 
-            _testGameplay.Initialize(_container);
+            _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
+
+            _container.Resolve<MainHeroFactory>().Create(Vector3.zero);
 
             yield break;
         }
@@ -54,34 +58,20 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
         {
             Debug.Log("GameplayBootstrap running...");
             
-            _testGameplay.Run();
+            _gameplayStatesContext.Run();
         }
         
         private void Update()
         {
             _brainsContext?.Update(Time.deltaTime);
             _entitiesLifeContext?.Update(Time.deltaTime);
+            _gameplayStatesContext?.Update(Time.deltaTime);
             
             if (Input.GetKeyDown(KeyCode.F))
             {
                 SceneSwitcherService sceneSwitcherService = _container.Resolve<SceneSwitcherService>();
                 ICoroutinesPerformer coroutinesPerformer = _container.Resolve<ICoroutinesPerformer>();
                 coroutinesPerformer.StartPerform(sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                _walletService.Add(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
-            }
-            
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                if (_walletService.Enough(CurrencyTypes.Gold, 10) == false)
-                    return;
-                
-                _walletService.Spend(CurrencyTypes.Gold, 10);
-                Debug.Log("Gold: " + _walletService.GetCurrency(CurrencyTypes.Gold).Value);
             }
         }
     }

@@ -7,48 +7,48 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
     public abstract class DataProvider<TData> where TData : ISaveData
     {
         private readonly ISaveLoadService _saveLoadService;
-        
-        private readonly List<IDataReader<TData>> _readers = new();
+
         private readonly List<IDataWriter<TData>> _writers = new();
-        
+        private readonly List<IDataReader<TData>> _readers = new();
+
         private TData _data;
 
         protected DataProvider(ISaveLoadService saveLoadService)
         {
             _saveLoadService = saveLoadService;
         }
-        
+
         public void RegisterWriter(IDataWriter<TData> writer)
         {
             if (_writers.Contains(writer))
-                throw new ArgumentException($"Writer {nameof(writer)} already registered");
-            
+                throw new ArgumentException(nameof(writer));
+
             _writers.Add(writer);
         }
 
         public void RegisterReader(IDataReader<TData> reader)
         {
             if (_readers.Contains(reader))
-                throw new ArgumentException($"Reader {nameof(reader)} already registered");
-            
+                throw new ArgumentException(nameof(reader));
+
             _readers.Add(reader);
         }
 
-        public IEnumerator Load()
+        public IEnumerator LoadAsync()
         {
             yield return _saveLoadService.Load<TData>(loadedData => _data = loadedData);
-            
+
             SendDataToReaders();
         }
-        
-        public IEnumerator Save()
+
+        public IEnumerator SaveAsync()
         {
             UpdateDataFromWriters();
-            
+
             yield return _saveLoadService.Save(_data);
         }
-        
-        public IEnumerator Exists(Action<bool> onExistsResult)
+
+        public IEnumerator ExistsAsync(Action<bool> onExistsResult)
         {
             yield return _saveLoadService.Exists<TData>(result => onExistsResult?.Invoke(result));
         }
@@ -56,7 +56,7 @@ namespace _Project.Develop.Runtime.Utilities.DataManagement.DataProviders
         public void Reset()
         {
             _data = GetOriginData();
-            
+
             SendDataToReaders();
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace _Project.Develop.Runtime.Utilities.Reactive
 {
-    public class ReactiveEvent<T>: IReadonlyEvent<T>
+    public class ReactiveEvent<T>: IReadOnlyEvent<T>
     {
         private readonly List<Subscriber<T>> _subscribers = new();
         private readonly List<Subscriber<T>> _toAdd = new();
