@@ -8,8 +8,10 @@ using _Project.Develop.Runtime.Gameplay.Features.Attack.Blow;
 using _Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using _Project.Develop.Runtime.Gameplay.Features.Energy;
 using _Project.Develop.Runtime.Gameplay.Features.LifeCycle;
+using _Project.Develop.Runtime.Gameplay.Features.MainHero;
 using _Project.Develop.Runtime.Gameplay.Features.MovementFeature;
 using _Project.Develop.Runtime.Gameplay.Features.Sensors;
+using _Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using _Project.Develop.Runtime.Gameplay.Features.Teleport;
 using _Project.Develop.Runtime.Utilities;
 using _Project.Develop.Runtime.Utilities.Conditions;
@@ -22,30 +24,6 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 {
 	public partial class Entity
 	{
-		public _Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Team TeamC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Team>();
-
-		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Teams> Team => TeamC.Value;
-
-		public bool TryGetTeam(out _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Teams> value)
-		{
-			bool result = TryGetComponent(out _Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Team component);
-			if(result)
-				value = component.Value;
-			else
-				value = default(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Teams>);
-			return result;
-		}
-
-		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTeam()
-		{
-			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Team() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Teams>() }); 
-		}
-
-		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTeam(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Teams> value)
-		{
-			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.TeamsFeature.Team() {Value = value}); 
-		}
-
 		public TeleportRadius TeleportRadiusC => GetComponent<TeleportRadius>();
 
 		public ReactiveVariable<Single> TeleportRadius => TeleportRadiusC.Value;
@@ -401,6 +379,30 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new InTeleportCooldown() {Value = value}); 
 		}
 
+		public Team TeamC => GetComponent<Team>();
+
+		public ReactiveVariable<Teams> Team => TeamC.Value;
+
+		public bool TryGetTeam(out ReactiveVariable<Teams> value)
+		{
+			bool result = TryGetComponent(out Team component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(ReactiveVariable<Teams>);
+			return result;
+		}
+
+		public Entity AddTeam()
+		{
+			return AddComponent(new Team() { Value = new ReactiveVariable<Teams>() }); 
+		}
+
+		public Entity AddTeam(ReactiveVariable<Teams> value)
+		{
+			return AddComponent(new Team() {Value = value}); 
+		}
+
 		public BodyCollider BodyColliderC => GetComponent<BodyCollider>();
 
 		public CapsuleCollider BodyCollider => BodyColliderC.Value;
@@ -418,30 +420,6 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 		public Entity AddBodyCollider(CapsuleCollider value)
 		{
 			return AddComponent(new BodyCollider() {Value = value}); 
-		}
-
-		public _Project.Develop.Runtime.Gameplay.Features.Sensors.IsTouchAnotherTeam IsTouchAnotherTeamC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.Sensors.IsTouchAnotherTeam>();
-
-		public _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> IsTouchAnotherTeam => IsTouchAnotherTeamC.Value;
-
-		public bool TryGetIsTouchAnotherTeam(out _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> value)
-		{
-			bool result = TryGetComponent(out _Project.Develop.Runtime.Gameplay.Features.Sensors.IsTouchAnotherTeam component);
-			if(result)
-				value = component.Value;
-			else
-				value = default(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean>);
-			return result;
-		}
-
-		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsTouchAnotherTeam()
-		{
-			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.Sensors.IsTouchAnotherTeam() { Value = new _Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean>() }); 
-		}
-
-		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsTouchAnotherTeam(_Project.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Boolean> value)
-		{
-			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.Sensors.IsTouchAnotherTeam() {Value = value}); 
 		}
 
 		public ContactsDetectingMask ContactsDetectingMaskC => GetComponent<ContactsDetectingMask>();
@@ -544,6 +522,30 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new IsTouchDeathMask() {Value = value}); 
 		}
 
+		public IsTouchAnotherTeam IsTouchAnotherTeamC => GetComponent<IsTouchAnotherTeam>();
+
+		public ReactiveVariable<Boolean> IsTouchAnotherTeam => IsTouchAnotherTeamC.Value;
+
+		public bool TryGetIsTouchAnotherTeam(out ReactiveVariable<Boolean> value)
+		{
+			bool result = TryGetComponent(out IsTouchAnotherTeam component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(ReactiveVariable<Boolean>);
+			return result;
+		}
+
+		public Entity AddIsTouchAnotherTeam()
+		{
+			return AddComponent(new IsTouchAnotherTeam() { Value = new ReactiveVariable<Boolean>() }); 
+		}
+
+		public Entity AddIsTouchAnotherTeam(ReactiveVariable<Boolean> value)
+		{
+			return AddComponent(new IsTouchAnotherTeam() {Value = value}); 
+		}
+
 		public MoveDirection MoveDirectionC => GetComponent<MoveDirection>();
 
 		public ReactiveVariable<Vector3> MoveDirection => MoveDirectionC.Value;
@@ -635,13 +637,6 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new CanMove() {Value = value}); 
 		}
 
-		public _Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero IsMainHeroC => GetComponent<_Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero>();
-
-		public _Project.Develop.Runtime.Gameplay.EntitiesCore.Entity AddIsMainHero()
-		{
-			return AddComponent(new _Project.Develop.Runtime.Gameplay.Features.MainHero.IsMainHero() ); 
-		}
-
 		public RotationDirection RotationDirectionC => GetComponent<RotationDirection>();
 
 		public ReactiveVariable<Vector3> RotationDirection => RotationDirectionC.Value;
@@ -707,6 +702,13 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
 		public Entity AddCanRotate(ICompositeCondition value)
 		{
 			return AddComponent(new CanRotate() {Value = value}); 
+		}
+
+		public IsMainHero IsMainHeroC => GetComponent<IsMainHero>();
+
+		public Entity AddIsMainHero()
+		{
+			return AddComponent(new IsMainHero() ); 
 		}
 
 		public CurrentHealth CurrentHealthC => GetComponent<CurrentHealth>();
