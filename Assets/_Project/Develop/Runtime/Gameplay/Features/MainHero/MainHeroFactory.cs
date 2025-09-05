@@ -28,9 +28,12 @@ namespace _Project.Develop.Runtime.Gameplay.Features.MainHero
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
         }
 
-        public Entity Create(Vector3 position)
+        public Entity Create(Vector3 position, int maxHealth = 0)
         {
             HeroConfig config = _configsProviderService.GetConfig<HeroConfig>();
+            
+            if (maxHealth != 0)
+                config.MaxHealth = maxHealth;
 
             Entity entity = _entitiesFactory.CreateHero(position, config);
 

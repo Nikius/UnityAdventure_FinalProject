@@ -2,6 +2,7 @@
 using _Project.Develop.Runtime.Configs.Gameplay.Entities;
 using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using _Project.Develop.Runtime.Gameplay.Features.AI;
+using _Project.Develop.Runtime.Gameplay.Features.MainHero;
 using _Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Utilities.Reactive;
@@ -16,6 +17,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Enemies
         private readonly EntitiesFactory _entitiesFactory;
         private readonly BrainsFactory _brainsFactory;
         private readonly EntitiesLifeContext _entitiesLifeContext;
+        private readonly MainHeroHolderService _mainHeroHolderService;
 
         public EnemiesFactory(DIContainer container)
         {
@@ -23,6 +25,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Enemies
             _entitiesFactory = _container.Resolve<EntitiesFactory>();
             _brainsFactory = _container.Resolve<BrainsFactory>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
+            _mainHeroHolderService = _container.Resolve<MainHeroHolderService>();
         }
 
         public Entity Create(Vector3 position, EntityConfig config)
@@ -34,6 +37,11 @@ namespace _Project.Develop.Runtime.Gameplay.Features.Enemies
                 case GhostConfig ghostConfig:
                     entity = _entitiesFactory.CreateGhost(position, ghostConfig);
                     _brainsFactory.CreateGhostBrain(entity);
+                    break;
+                
+                case BomberConfig bomberConfig:
+                    entity = _entitiesFactory.CreateBomber(position, bomberConfig, _mainHeroHolderService.MainHero);
+                    _brainsFactory.CreateBomberBrain(entity);
                     break;
 
                 default:

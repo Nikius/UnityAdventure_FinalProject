@@ -4,6 +4,7 @@ using _Project.Develop.Runtime.Gameplay.Features.AI.RandomTarget;
 using _Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
 using _Project.Develop.Runtime.Gameplay.Features.Attack;
 using _Project.Develop.Runtime.Gameplay.Features.Attack.Blow;
+using _Project.Develop.Runtime.Gameplay.Features.Attack.DirectTarget;
 using _Project.Develop.Runtime.Gameplay.Features.Attack.Shoot;
 using _Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using _Project.Develop.Runtime.Gameplay.Features.Energy;
@@ -39,7 +40,7 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
         {
             Entity entity = CreateEmpty();
 
-            _monoEntitiesFactory.Create(entity, position, "Entities/Hero");
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
 
             entity
                 .AddID("Hero")
@@ -83,7 +84,7 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
             
             ICompositeCondition mustSelfRelease = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value == true))
+                .Add(new FuncCondition(() => entity.IsDead.Value))
                 .Add(new FuncCondition(() => entity.InDeathProcess.Value == false));
             
             ICompositeCondition canApplyDamage = new CompositeCondition()
@@ -382,6 +383,86 @@ namespace _Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService));
 
             _entitiesLifeContext.Add(entity);
+            
+            return entity;
+        }
+        
+        public Entity CreateBomber(Vector3 position, BomberConfig config, Entity target)
+        {
+            Entity entity = CreateEmpty();
+
+            _monoEntitiesFactory.Create(entity, position, config.PrefabPath);
+
+            entity
+                .AddID("Bomber")
+                .AddMoveDirection()
+                .AddMoveSpeed(new ReactiveVariable<float>(config.MoveSpeed))
+                .AddIsMoving()
+                .AddRotationDirection()
+                .AddRotationSpeed(new ReactiveVariable<float>(config.RotationSpeed))
+                .AddCurrentTarget(new ReactiveVariable<Entity>(target))
+
+                .AddMaxHealth(new ReactiveVariable<float>(config.MaxHealth))
+                .AddCurrentHealth(new ReactiveVariable<float>(config.MaxHealth))
+
+                .AddIsDead()
+                .AddInDeathProcess()
+                .AddDeathProcessInitialTime(new ReactiveVariable<float>(config.DeathProcessTime))
+                .AddDeathProcessCurrentTime()
+
+                .AddTakeDamageRequest()
+                .AddTakeDamageEvent()
+                .AddAttackProcessInitialTime(new ReactiveVariable<float>(config.AttackProcessTime))
+                .AddAttackProcessCurrentTime()
+                .AddInAttackProcess()
+                .AddStartAttackRequest()
+                .AddStartAttackEvent()
+                .AddEndAttackEvent()
+                .AddBlowRadius(new ReactiveVariable<float>(config.BlowRadius))
+                .AddBlowDamage(new ReactiveVariable<float>(config.BlowDamage));
+
+            ICompositeCondition canMove = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+            
+            ICompositeCondition canRotate = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+            
+            ICompositeCondition mustDie = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
+            
+            ICompositeCondition mustSelfRelease = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value))
+                .Add(new FuncCondition(() => entity.InDeathProcess.Value == false));
+            
+            ICompositeCondition canStartAttack = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false))
+                .Add(new FuncCondition(() => entity.InAttackProcess.Value == false));
+            
+            ICompositeCondition canApplyDamage = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
+            entity
+                .AddCanMove(canMove)
+                .AddCanRotate(canRotate)
+                .AddMustDie(mustDie)
+                .AddMustSelfRelease(mustSelfRelease)
+                .AddCanApplyDamage(canApplyDamage)
+                .AddCanStartAttack(canStartAttack);
+
+            entity
+                .AddSystem(new RigidbodyMovementSystem())
+                .AddSystem(new RigidbodyRotationSystem())
+                
+                .AddSystem(new StartAttackSystem())
+                .AddSystem(new AttackProcessTimerSystem())
+                .AddSystem(new DirectTargetAttackSystem(entity.BlowDamage))
+                .AddSystem(new EndAttackSystem())
+                
+                .AddSystem(new ApplyDamageSystem())
+                .AddSystem(new DeathSystem())
+                .AddSystem(new DisableCollidersOnDeathSystem())
+                .AddSystem(new DeathProcessTimerSystem())
+                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
             
             return entity;
         }

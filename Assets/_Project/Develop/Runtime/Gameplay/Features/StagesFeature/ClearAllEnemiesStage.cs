@@ -60,7 +60,7 @@ namespace _Project.Develop.Runtime.Gameplay.Features.StagesFeature
         public void Start()
         {
             if (_inProcess)
-                throw new InvalidOperationException("Game mode alread started");
+                throw new InvalidOperationException("Game mode already started");
 
             SpawnEnemies();
 

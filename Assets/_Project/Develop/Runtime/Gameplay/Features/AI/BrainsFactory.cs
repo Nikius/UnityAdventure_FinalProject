@@ -102,6 +102,40 @@ namespace _Project.Develop.Runtime.Gameplay.Features.AI
             return brain;
         }
         
+        public StateMachineBrain CreateBomberBrain(Entity entity)
+        {
+            EmptyState emptyState = new EmptyState();
+            
+            MovementToTargetState movementState = new MovementToTargetState(entity);
+            AttackTriggerState attackTriggerState = new AttackTriggerState(entity);
+            SelfDestroyByTriggerState selfDestroyByTriggerState = new SelfDestroyByTriggerState(entity, entity.EndAttackEvent);
+            
+            ICompositeCondition fromEmptyToMovementStateCondition = entity.CanMove;
+            
+            FuncCondition fromMovementToAttackStateCondition = new FuncCondition(()
+                => Vector3.Distance(entity.Transform.position, entity.CurrentTarget.Value.Transform.position) <= entity.BlowRadius.Value
+            );
+            
+            FuncCondition fromAttackToSelfDestroyStateCondition = new FuncCondition(() => entity.InAttackProcess.Value);
+
+            AIStateMachine stateMachine = new AIStateMachine();
+            
+            stateMachine.AddState(emptyState);
+            stateMachine.AddState(movementState);
+            stateMachine.AddState(attackTriggerState);
+            stateMachine.AddState(selfDestroyByTriggerState);
+            
+            stateMachine.AddTransition(emptyState, movementState, fromEmptyToMovementStateCondition);
+            stateMachine.AddTransition(movementState, attackTriggerState, fromMovementToAttackStateCondition);
+            stateMachine.AddTransition(attackTriggerState, selfDestroyByTriggerState, fromAttackToSelfDestroyStateCondition);
+            
+            StateMachineBrain brain = new StateMachineBrain(stateMachine);
+            
+            _brainsContext.SetFor(entity, brain);
+            
+            return brain;
+        }
+        
         private AIStateMachine CreateRandomMovementStateMachine(Entity entity)
         {
             List<IDisposable> disposables = new List<IDisposable>();

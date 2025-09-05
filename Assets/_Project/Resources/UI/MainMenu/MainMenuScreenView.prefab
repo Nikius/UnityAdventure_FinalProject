@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Open Levels Menu
+  m_text: Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -309,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <WalletView>k__BackingField: {fileID: 3106056802084283148}
   <ScoreListView>k__BackingField: {fileID: 4908766505383281626}
-  _openLevelsMenuButton: {fileID: 1196654248507666709}
+  _playButton: {fileID: 1196654248507666709}
 --- !u!222 &8726402759601495913
 CanvasRenderer:
   m_ObjectHideFlags: 0

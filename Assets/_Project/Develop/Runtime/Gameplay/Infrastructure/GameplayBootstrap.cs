@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using _Project.Develop.Runtime.Configs.Gameplay.Levels;
 using _Project.Develop.Runtime.Gameplay.EntitiesCore;
 using _Project.Develop.Runtime.Gameplay.Features.AI;
 using _Project.Develop.Runtime.Gameplay.Features.MainHero;
@@ -7,6 +8,7 @@ using _Project.Develop.Runtime.Gameplay.States;
 using _Project.Develop.Runtime.Infrastructure;
 using _Project.Develop.Runtime.Infrastructure.DI;
 using _Project.Develop.Runtime.Meta.Features.Wallet;
+using _Project.Develop.Runtime.Utilities.ConfigsManagement;
 using _Project.Develop.Runtime.Utilities.CoroutinesManagement;
 using _Project.Develop.Runtime.Utilities.SceneManagement;
 using UnityEngine;
@@ -49,7 +51,12 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
 
-            _container.Resolve<MainHeroFactory>().Create(Vector3.zero);
+            LevelConfig levelConfig = _container
+                .Resolve<ConfigsProviderService>()
+                .GetConfig<LevelsListConfig>()
+                .GetBy(_inputArgs.LevelNumber);
+
+            _container.Resolve<MainHeroFactory>().Create(Vector3.zero, levelConfig.PlayerHealth);
 
             yield break;
         }
