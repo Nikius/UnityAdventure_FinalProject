@@ -16,6 +16,7 @@ namespace _Project.Develop.Runtime.UI.Core
             { ViewIDs.ScoreItemView, "UI/Score/ScoreItemView"},
             { ViewIDs.ScoreListView, "UI/Score/ScoreListView"},
             { ViewIDs.MainMenuScreen, "UI/MainMenu/MainMenuScreenView"},
+            { ViewIDs.GameplayScreen, "UI/Gameplay/GameplayScreenView"},
             { ViewIDs.TestPopup, "UI/TestPopup"},
             { ViewIDs.LevelTile, "UI/LevelsMenuPopup/LevelTile"},
             { ViewIDs.LevelsMenuPopup, "UI/LevelsMenuPopup/LevelsMenuPopup"},

@@ -8,8 +8,11 @@ using _Project.Develop.Runtime.Gameplay.Features.MainHero;
 using _Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using _Project.Develop.Runtime.Gameplay.States;
 using _Project.Develop.Runtime.Infrastructure.DI;
+using _Project.Develop.Runtime.UI.Core;
+using _Project.Develop.Runtime.UI.Gameplay;
 using _Project.Develop.Runtime.Utilities.AssetsManagement;
 using _Project.Develop.Runtime.Utilities.ConfigsManagement;
+using UnityEngine;
 
 namespace _Project.Develop.Runtime.Gameplay.Infrastructure
 {
@@ -36,6 +39,38 @@ namespace _Project.Develop.Runtime.Gameplay.Infrastructure
             container.RegisterAsSingle(CreateMainHeroHolderService).NonLazy();
             container.RegisterAsSingle<IInputService>(CreateDesktopInput);
             container.RegisterAsSingle(CreateMonoEntitiesFactory).NonLazy();
+            
+            container.RegisterAsSingle(CreateGameplayUIRoot).NonLazy();
+            container.RegisterAsSingle(CreateGameplayPresenterFactory);
+            container.RegisterAsSingle(CreateGameplayScreenPresenter).NonLazy();
+        }
+        
+        private static GameplayUIRoot CreateGameplayUIRoot(DIContainer c)
+        {
+            GameplayUIRoot menuUIRootPrefab = c.Resolve<ResourcesAssetsLoader>()
+                .Load<GameplayUIRoot>("UI/Gameplay/GameplayUIRoot");
+
+            return Object.Instantiate(menuUIRootPrefab);
+        }
+        
+        public static GameplayPresenterFactory CreateGameplayPresenterFactory(DIContainer c)
+        {
+            return new GameplayPresenterFactory(c);
+        }
+
+        private static GameplayScreenPresenter CreateGameplayScreenPresenter(DIContainer c)
+        {
+            GameplayUIRoot uiRoot = c.Resolve<GameplayUIRoot>();
+            
+            GameplayScreenView view = c
+                .Resolve<ViewsFactory>()
+                .Create<GameplayScreenView>(ViewIDs.GameplayScreen, uiRoot.HUDLayer);
+
+            GameplayScreenPresenter presenter = c
+                .Resolve<GameplayPresenterFactory>()
+                .CreateGameplayScreen(view);
+            
+            return presenter;
         }
 
         private static GameplayStatesContext CreateGameplayStatesContext(DIContainer c)
